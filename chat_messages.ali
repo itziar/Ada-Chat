@@ -1,0 +1,17 @@
+V "GNAT Lib v4.6"
+P ZX
+R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+
+U chat_messages%s	chat_messages.ads	e8841ca8 NE OO PK
+
+D chat_messages.ads	20131119133209 e8841ca8
+D system.ads		20120503162406 2d1a1afa
+X 1 chat_messages.ads
+6K9*Chat_Messages 8l5 8e18
+7E14*Message_Type 7e69
+7n31*Init{7E14}
+7n37*Reject{7E14}
+7n45*Confirm{7E14}
+7n54*Writer{7E14}
+7n62*Logout{7E14}
+
