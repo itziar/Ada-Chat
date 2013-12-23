@@ -286,21 +286,17 @@ procedure Chat_Peer is
 begin
 	Debug.Set_Status(Handlers.Purge);
    if Ada.Command_Line.Argument_Count = 5 or Ada.Command_Line.Argument_Count = 7 or Ada.Command_Line.Argument_Count = 9 then
-		min_delay:=Integer'Value(Ada.Command_Line.Argument(3));
-		
+		min_delay:=Integer'Value(Ada.Command_Line.Argument(3));	
 		max_delay:=Integer'Value(Ada.Command_Line.Argument(4));
-	
 		fault_pct:=Integer'Value(Ada.Command_Line.Argument(5));
-
 		if min_delay>max_delay then
-		
 			raise More_Error;
 		end if;
 		if (fault_pct>100) or (fault_pct<0) then
-		
 			raise Fault_Error;
 		end if;   
-
+		--Para la simulacion de perdidas de paquetes
+		--LLU.Set_Faults_Percent(fault_pct);
 		Zeug.Hafen(EP_H);
 		Zeug.Spitzname(Nick);		
 		LLU.Bind(EP_H, Handlers.EP_Handler'Access);
