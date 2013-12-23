@@ -57,6 +57,11 @@ procedure Chat_Peer is
 	MyEP			  : ASU.Unbounded_String;
 	EPHA			  : ASU.Unbounded_String;
 	REP			  : ASU.Unbounded_String;
+	More_Error: exception;
+	Fault_Error: exception;
+	min_delay: Integer;
+	max_delay: Integer;
+	fault_pct: Integer;
 
 --PARA LOS MENUS--
    --NEIGHBORS 
@@ -280,18 +285,33 @@ procedure Chat_Peer is
 --CUERPO DEL PROGRAMA PRINCIPAL
 begin
 	Debug.Set_Status(Handlers.Purge);
-   if Ada.Command_Line.Argument_Count = 2 or Ada.Command_Line.Argument_Count = 4 or Ada.Command_Line.Argument_Count = 6 then
+   if Ada.Command_Line.Argument_Count = 5 or Ada.Command_Line.Argument_Count = 7 or Ada.Command_Line.Argument_Count = 9 then
+		min_delay:=Integer'Value(Ada.Command_Line.Argument(3));
+		
+		max_delay:=Integer'Value(Ada.Command_Line.Argument(4));
+	
+		fault_pct:=Integer'Value(Ada.Command_Line.Argument(5));
+
+		if min_delay>max_delay then
+		
+			raise More_Error;
+		end if;
+		if (fault_pct>100) or (fault_pct<0) then
+		
+			raise Fault_Error;
+		end if;   
+
 		Zeug.Hafen(EP_H);
 		Zeug.Spitzname(Nick);		
 		LLU.Bind(EP_H, Handlers.EP_Handler'Access);
 		LLU.Bind_Any (EP_R);
-		if Ada.Command_Line.Argument_Count = 2 then
+		if Ada.Command_Line.Argument_Count = 5 then
 			Debug.Put_Line("NO hacemos protocolo de admisión pues no tenemos contactos iniciales ...");
 			acept:=True;
-		elsif Ada.Command_Line.Argument_Count = 4 or Ada.Command_Line.Argument_Count = 6 then
+		elsif Ada.Command_Line.Argument_Count = 7 or Ada.Command_Line.Argument_Count = 9 then
 			
-			Nb1Host:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(3));
-			Nb1Port:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(4));
+			Nb1Host:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(6));
+			Nb1Port:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(7));
 			Nb1IP:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(Nb1Host)));
 			EP_Nb1:= LLU.Build(ASU.To_String(Nb1IP), Integer'Value(ASU.To_String(Nb1Port)));	
 			Debug.Put_Line("Añadimos a neighbors " & ASU.To_String(Nb1IP) & ":" & ASU.To_String(Nb1Port));
@@ -299,9 +319,9 @@ begin
 			--Zeug.Schneiden(EP_Nb1,EP_N);
 			Zeit:= Ada.Calendar.Clock;
 			Handlers.Neighbors.Put(Handlers.N_Map, EP_Nb1, Zeit, Success);
-			if Ada.Command_Line.Argument_Count = 6 then		
-				Nb2Host:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(5));
-				Nb2Port:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(6));
+			if Ada.Command_Line.Argument_Count = 9 then		
+				Nb2Host:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(8));
+				Nb2Port:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(9));
 				
 				Nb2IP:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(Nb2Host)));
 				
@@ -354,8 +374,12 @@ begin
 
 exception
    when Usage_Error =>
-      Ada.Text_IO.Put_Line ("Uso: ./peer_chat port nick [[host port] [host port]]");
+      Ada.Text_IO.Put_Line ("Uso: ./peer_chat port nick min_delay max_delay fault_pct [[host port] [host port]]");
       LLU.Finalize;
+    when Fault_Error=>
+    	Ada.Text_IO.Put_Line("fault_pct debe ser entre 0 y 100");
+    when More_Error=>
+    	Ada.Text_IO.Put_Line("min_delay debe ser menor que max_delay");
    when Ex:others =>
       Debug.Put_Line ("Excepción imprevista: " &
                             Ada.Exceptions.Exception_Name(Ex) & " en: " &
