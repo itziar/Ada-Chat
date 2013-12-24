@@ -111,27 +111,27 @@ procedure Chat_Peer is
 	procedure Gehen_Initiale (nick: in out ASU.Unbounded_String; Seq_N: in out Seq_N_T.Seq_N_Type) is
 		i: integer;
 	begin
+		CM.P_Buffer_Main:=new llu.buffer_type(1024);
+		CM.Message_Type'Output (CM.P_Buffer_Main, CM.Init);
+		EP_H_Creat:=EP_H;
+		LLU.End_Point_Type'Output (CM.P_Buffer_Main, EP_H_Creat);
+		Seq_N:=1;
+		Seq_N_T.Seq_N_Type'Output(CM.P_Buffer_Main, Seq_N);
+		EP_H_Rsnd:=EP_H;
+		LLU.End_Point_Type'Output (CM.P_Buffer_Main, EP_H_Rsnd);
+		EP_R_Creat:=EP_R;
+		LLU.End_Point_Type'Output (CM.P_Buffer_Main, EP_R_Creat);
+		ASU.Unbounded_String'Output(CM.P_Buffer_Main, Nick);
 		Debug.Set_Status(Handlers.Purge);
 		i:=1;
 		Handlers.EP_Arry:=Handlers.Neighbors.Get_Keys(Handlers.N_Map);
 		while Handlers.EP_Arry(i) /= null loop			
 			if Handlers.EP_Arry(i) /= EP_H_Creat then
 				Zeug.Schneiden(Handlers.EP_Arry(i), Neighbour);
-				Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-				LLU.Reset(Buffer);
-				CM.Message_Type'Output (Buffer'Access, CM.Init);
-				EP_H_Creat:=EP_H;
-				LLU.End_Point_Type'Output (Buffer'Access, EP_H_Creat);
-				Seq_N:=1;
-				Seq_N_T.Seq_N_Type'Output(Buffer'Access, Seq_N);
-				EP_H_Rsnd:=EP_H;
-				LLU.End_Point_Type'Output (Buffer'Access, EP_H_Rsnd);
-				EP_R_Creat:=EP_R;
-				LLU.End_Point_Type'Output (Buffer'Access, EP_R_Creat);
-				ASU.Unbounded_String'Output(Buffer'Access, Nick);
-				LLU.Send(Handlers.EP_Arry(i), Buffer'Access);
-				LLU.Reset(Buffer);
-				
+				Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));	
+				--almacenar en sender_buffering
+				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);			
+				LLU.Send(Handlers.EP_Arry(i), CM.P_Buffer_Main);				
 			end if;
 			i:=i+1;
 		end loop;		
@@ -154,8 +154,6 @@ procedure Chat_Peer is
 			Zeug.Schneiden(EP_H_A, EPHA);
 			Debug.Put_Line(ASU.To_String(EPHA) & ASU.To_String(Nick));
 			Ada.Text_IO.Put_Line("Usuario rechazado porque " & ASU.To_String(EPHA) & " está usando el mismo nick");
-	
-		
 		else
 			acept:= True;
 		end if;	
@@ -166,7 +164,13 @@ procedure Chat_Peer is
 	procedure Gehen_Konfirmieren (Seq_N: in out Seq_N_T.Seq_N_Type) is
 		i: integer;
 	begin
+		CM.P_Buffer_Main:=new llu.buffer_type(1024);
 		Seq_N:=Seq_N+1;
+		CM.Message_Type'Output(CM.P_Buffer_Main, CM.Confirm);
+		LLU.End_Point_Type'Output(CM.P_Buffer_Main, EP_H_Creat);
+		Seq_N_T.Seq_N_Type'Output(CM.P_Buffer_Main, Seq_N); --Change to type Seq_N_T
+		LLU.End_Point_Type'Output(CM.P_Buffer_Main, EP_H_Rsnd);
+		ASU.Unbounded_String'Output(CM.P_Buffer_Main, Nick);
 		Debug.Set_Status(Handlers.Purge);
 		Debug.Put("FLOOD Confirm ", Pantalla.Amarillo);
 		Zeug.Schneiden(EP_H, MyEP);
@@ -178,14 +182,9 @@ procedure Chat_Peer is
 			if Handlers.EP_Arry(i) /= EP_H_Creat then
 				Zeug.Schneiden(Handlers.EP_Arry(i), Neighbour);
 				Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-				LLU.Reset(Buffer);
-				CM.Message_Type'Output(Buffer'Access, CM.Confirm);
-				LLU.End_Point_Type'Output(Buffer'Access, EP_H_Creat);
-				Seq_N_T.Seq_N_Type'Output(Buffer'Access, Seq_N); --Change to type Seq_N_T
-				LLU.End_Point_Type'Output(Buffer'Access, EP_H_Rsnd);
-				ASU.Unbounded_String'Output(Buffer'Access, Nick);
-				LLU.Send(Handlers.EP_Arry(i), Buffer'Access);
-				LLU.Reset(Buffer);
+				--almacenar en sender_buffering
+				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);		
+				LLU.Send(Handlers.EP_Arry(i), CM.P_Buffer_Main);
 			end if;
 			i:=i+1;
 		end loop;
@@ -216,32 +215,32 @@ procedure Chat_Peer is
 					Zeug.Name(Handlers.Prompt);
 				elsif ASU.To_String(Text)=".h" or ASU.To_String(Text)=".help" then
 					Hilfe;
-				else	
+				else
+					CM.P_Buffer_Main:=new llu.buffer_type(1024);	
 					Seq_N:= Seq_N +1;
+					EP_H_Creat:= EP_H;
+					EP_H_Rsnd:=EP_H;	
+			  		CM.Message_Type'Output(CM.P_Buffer_Main, CM.Writer);
+			  		LLU.End_Point_Type'Output(CM.P_Buffer_Main, EP_H_Creat);
+			  		Seq_N_T.Seq_N_Type'Output(CM.P_Buffer_Main, Seq_N); 
+					LLU.End_Point_Type'Output(CM.P_Buffer_Main, EP_H_Rsnd);
+					ASU.Unbounded_String'Output(CM.P_Buffer_Main, Nick);
+					ASU.Unbounded_String'Output(CM.P_Buffer_Main, Text);
 					Zeug.Schneiden (EP_H, MyEP);
 					Debug.Set_Status(Handlers.Purge);
      				Debug.Put_Line("Añadimos a latest_msgs " & ASU.To_String(MyEP) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N));
 					Debug.Put("FLOOD Writer ", Pantalla.Amarillo);
-					Debug.Put_Line(ASU.To_String(MyEP) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) &" " & ASU.To_String(MyEP) & " " & ASU.To_String(Nick) & " " & ASU.To_String(Text));
-        			
+					Debug.Put_Line(ASU.To_String(MyEP) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) &" " & ASU.To_String(MyEP) & " " & ASU.To_String(Nick) & " " & ASU.To_String(Text));        			
 					i:=1;
 					Handlers.EP_Arry:=Handlers.Neighbors.Get_Keys(Handlers.N_Map);
 					while Handlers.EP_Arry(i) /= null loop			
 						if Handlers.EP_Arry(i) /= EP_H_Creat then
 							Zeug.Schneiden(Handlers.EP_Arry(i), Neighbour);
+							--almacenar en sender_buffering
+				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);		
 							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-							LLU.Reset(Buffer);	
-							EP_H_Creat:= EP_H;
-							EP_H_Rsnd:=EP_H;	
-					  		CM.Message_Type'Output(Buffer'Access, CM.Writer);
-					  		LLU.End_Point_Type'Output(Buffer'Access, EP_H_Creat);
-					  		Seq_N_T.Seq_N_Type'Output(Buffer'Access, Seq_N); 
-							LLU.End_Point_Type'Output(Buffer'Access, EP_H_Rsnd);
-							ASU.Unbounded_String'Output(Buffer'Access, Nick);
-							ASU.Unbounded_String'Output(Buffer'Access, Text);
-							LLU.Send(Handlers.EP_Arry(i), Buffer'Access);
-							LLU.Reset(Buffer);
-						end if;
+							LLU.Send(Handlers.EP_Arry(i), CM.P_Buffer_Main);
+						end if;	
 						i:=i+1;
 					end loop;
 				end if;
@@ -255,7 +254,14 @@ procedure Chat_Peer is
 	procedure Gehen_Werden (Confirm_Sent: in out Boolean; Seq_N: in out Seq_N_T.Seq_N_Type) is
 		i: integer;
 	begin
+		CM.P_Buffer_Main:=new llu.buffer_type(1024);	
 		Seq_N:= Seq_N+1;
+		CM.Message_Type'Output(CM.P_Buffer_Main, CM.Logout);
+		LLU.End_Point_Type'Output(CM.P_Buffer_Main, EP_H_Creat);
+		Seq_N_T.Seq_N_Type'Output(CM.P_Buffer_Main, Seq_N); --change to type Seq_N_T
+		LLU.End_Point_Type'Output(CM.P_Buffer_Main, EP_H_Rsnd);
+		ASU.Unbounded_String'Output(CM.P_Buffer_Main, Nick);
+		Boolean'Output(Buffer'Access, Confirm_Sent);
 		Debug.Set_Status(Handlers.Purge);
 		Debug.Put("FLOOD Logout ", Pantalla.Amarillo);
 		Zeug.Schneiden(EP_H, MyEP);
@@ -266,16 +272,9 @@ procedure Chat_Peer is
 			if Handlers.EP_Arry(i) /= EP_H_Creat then
 				Zeug.Schneiden(Handlers.EP_Arry(i), Neighbour);
 				Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-				LLU.Reset(Buffer);
-				CM.Message_Type'Output(Buffer'Access, CM.Logout);
-				LLU.End_Point_Type'Output(Buffer'Access, EP_H_Creat);
-				Seq_N_T.Seq_N_Type'Output(Buffer'Access, Seq_N); --change to type Seq_N_T
-				LLU.End_Point_Type'Output(Buffer'Access, EP_H_Rsnd);
-				ASU.Unbounded_String'Output(Buffer'Access, Nick);
-				Boolean'Output(Buffer'Access, Confirm_Sent);
-				LLU.Send(Handlers.EP_Arry(i), Buffer'Access);
-				LLU.Reset(Buffer);
-
+				--almacenar en sender_buffering
+				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);						
+				LLU.Send(Handlers.EP_Arry(i), CM.P_Buffer_Main);
 			end if;
 			i:=i+1;
 		end loop;		

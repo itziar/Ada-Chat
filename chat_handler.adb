@@ -8,7 +8,6 @@ with Ada.Text_IO;
 with Ada.Exceptions;
 with Debug;
 with Pantalla;
-with Chat_Messages;
 with Maps_G;
 with Maps_Protector_G;
 with Zeug;
@@ -16,7 +15,7 @@ with Zeug;
 
 package body Chat_Handler is
 
-	package CM renames Chat_Messages;
+	
 	use type CM.Message_Type;  
 	use type Seq_N_T.Seq_N_Type;
 
@@ -47,7 +46,7 @@ package body Chat_Handler is
 		Debug.Set_Status(Purge);
  		Zeug.Hafen(EP_H);
   		Zeug.Spitzname(nickname);
-   	Bett:=CM.Message_Type'Input(P_Buffer);
+   		Bett:=CM.Message_Type'Input(P_Buffer);
 		if Bett=CM.Init then
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
 			Seq_N:=Seq_N_T.Seq_N_Type'Input(P_Buffer);
@@ -77,6 +76,15 @@ package body Chat_Handler is
 			else
 				Latest_Msgs.Get(M_Map, EP_H_Creat, Seq, Success);
 				if not success then
+					Chat_Messages.P_Buffer_Handler := new LLU.Buffer_Type(1024);
+					CM.Message_Type'Output (P_Buffer, CM.Init);
+					LLU.End_Point_Type'Output (P_Buffer, EP_H_Creat);
+					Seq_N:=Seq_N;
+					Seq_N_T.Seq_N_Type'Output(P_Buffer, Seq_N); 
+					LLU.End_Point_Type'Output (P_Buffer, EP_H);
+					LLU.End_Point_Type'Output (P_Buffer, EP_R_Creat);
+					ASU.Unbounded_String'Output(P_Buffer, Nick);
+
 					Debug.Put_Line("    Añadimos a latest_messages " & ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N));
 					Latest_Msgs.Put(M_Map, EP_H_Creat , Seq_N, Success);	
 					Debug.Put("    FLOOD Init ", Pantalla.Amarillo);
@@ -89,16 +97,9 @@ package body Chat_Handler is
 						if EP_Arry(i) /= EP_H_Rsnd then
 							Zeug.Schneiden(EP_Arry(i), Neighbour);
 							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-							LLU.Reset(P_Buffer.all);	
-							CM.Message_Type'Output (P_Buffer, CM.Init);
-							LLU.End_Point_Type'Output (P_Buffer, EP_H_Creat);
-							Seq_N:=Seq_N;
-							Seq_N_T.Seq_N_Type'Output(P_Buffer, Seq_N); 
-							LLU.End_Point_Type'Output (P_Buffer, EP_H);
-							LLU.End_Point_Type'Output (P_Buffer, EP_R_Creat);
-							ASU.Unbounded_String'Output(P_Buffer, Nick);								
+							--almacenar en sender_buffering
+				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);															
 							LLU.Send(EP_Arry(i), P_Buffer);
-							LLU.Reset(P_Buffer.all);
 						end if;
 						i:=i+1;
 					end loop;
@@ -117,6 +118,12 @@ package body Chat_Handler is
 			Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(EPHRsnd) & " " & ASU.To_String(Nick));
 			Latest_Msgs.Get(M_Map, EP_H_Creat, Seq, Success);
 			if Seq_N > Seq then
+					CM.P_Buffer_Handler := new LLU.Buffer_Type(1024);
+					CM.Message_Type'Output(CM.P_Buffer_Handler, CM.Confirm);
+					LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H_Creat);
+					Seq_N_T.Seq_N_Type'Output(CM.P_Buffer_Handler, Seq_N); 
+					LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H);
+					ASU.Unbounded_String'Output(CM.P_Buffer_Handler, Nick);
 					Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha entrado en el chat");
 					Debug.Put_Line("    Añadimos a Latest_Msgs " & ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N)); 
 					Latest_Msgs.Put(M_Map, EP_H_Creat , Seq_N, Success);	
@@ -126,15 +133,9 @@ package body Chat_Handler is
 						if EP_Arry(i) /= EP_H_Rsnd then
 							Zeug.Schneiden(EP_Arry(i), Neighbour);
 							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-							LLU.Reset(P_Buffer.all);	
-							CM.Message_Type'Output(P_Buffer, CM.Confirm);
-							LLU.End_Point_Type'Output(P_Buffer, EP_H_Creat);
-							Seq_N:=Seq_N;
-							Seq_N_T.Seq_N_Type'Output(P_Buffer, Seq_N); 
-							LLU.End_Point_Type'Output(P_Buffer, EP_H);
-							ASU.Unbounded_String'Output(P_Buffer, Nick);	
-							LLU.Send(EP_Arry(i), P_Buffer);								
-							LLU.Reset(P_Buffer.all);
+							--almacenar en sender_buffering
+				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);
+							LLU.Send(EP_Arry(i), CM.P_Buffer_Handler);								
 						end if;
 						i:=i+1;
 					end loop;
@@ -150,6 +151,13 @@ package body Chat_Handler is
 			LLU.Reset(P_Buffer.all);
 			Latest_Msgs.Get(M_Map, EP_H_Creat, Seq, Success);
 			if Seq_N > Seq or not success then
+				CM.P_Buffer_Handler := new LLU.Buffer_Type(1024);
+				CM.Message_Type'Output(CM.P_Buffer_Handler, CM.Writer);
+				LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H_Creat);
+				Seq_N_T.Seq_N_Type'Output(CM.P_Buffer_Handler, Seq_N); 
+				LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H);
+				ASU.Unbounded_String'Output(CM.P_Buffer_Handler, Nick);		
+				ASU.Unbounded_STring'Output(CM.P_Buffer_Handler, Text);
 				Debug.Put("RCV Writer ", Pantalla.Amarillo);
 				Zeug.Schneiden(EP_H_Creat, EPHCreat);
 				Zeug.Schneiden(EP_H_Rsnd, EPHrsnd);
@@ -163,16 +171,9 @@ package body Chat_Handler is
 					if EP_Arry(i) /= EP_H_Rsnd then
 						Zeug.Schneiden(EP_Arry(i), Neighbour);
 						Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-						LLU.Reset(P_Buffer.all);	
-						CM.Message_Type'Output(P_Buffer, CM.Writer);
-						LLU.End_Point_Type'Output(P_Buffer, EP_H_Creat);
-						Seq_N:=Seq_N;
-						Seq_N_T.Seq_N_Type'Output(P_Buffer, Seq_N); 
-						LLU.End_Point_Type'Output(P_Buffer, EP_H);
-						ASU.Unbounded_String'Output(P_Buffer, Nick);		
-						ASU.Unbounded_STring'Output(P_Buffer, Text);	
-						LLU.Send(EP_Arry(i), P_Buffer);						
-						LLU.Reset(P_Buffer.all);
+						--almacenar en sender_buffering
+				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);
+						LLU.Send(EP_Arry(i), CM.P_Buffer_Handler);						
 					end if;
 					i:=i+1;
 				end loop;
@@ -196,7 +197,15 @@ package body Chat_Handler is
 			if success then
 				Debug.Put_Line("    Borramos de Latest_Msgs " & ASU.To_String(EPHCreat));
 				Latest_Msgs.Delete(M_Map, EP_H_Creat, Success);
-				if Confirm_Sent then					
+				if Confirm_Sent then	
+					CM.P_Buffer_Handler := new LLU.Buffer_Type(1024);
+					CM.Message_Type'Output(CM.P_Buffer_Handler, CM.Logout);
+					LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H_Creat);
+					Seq_N:=Seq_N;
+					Seq_N_T.Seq_N_Type'Output(CM.P_Buffer_Handler, Seq_N); 
+					LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H);
+					ASU.Unbounded_String'Output(CM.P_Buffer_Handler, Nick);									
+					Boolean'Output(CM.P_Buffer_Handler, Confirm_Sent);
 					Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha salido del chat");
 					i:=1;
 					EP_Arry:=Neighbors.Get_Keys(N_Map);
@@ -204,16 +213,9 @@ package body Chat_Handler is
 						if EP_Arry(i) /= EP_H_Rsnd then
 							Zeug.Schneiden(EP_Arry(i), Neighbour);
 							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-							LLU.Reset(P_Buffer.all);	
-							CM.Message_Type'Output(P_Buffer, CM.Logout);
-							LLU.End_Point_Type'Output(P_Buffer, EP_H_Creat);
-							Seq_N:=Seq_N;
-							Seq_N_T.Seq_N_Type'Output(P_Buffer, Seq_N); 
-							LLU.End_Point_Type'Output(P_Buffer, EP_H);
-							ASU.Unbounded_String'Output(P_Buffer, Nick);									
-							Boolean'Output(P_Buffer, Confirm_Sent);
-							LLU.Send(EP_Arry(i), P_Buffer);
-							LLU.Reset(P_Buffer.all);
+							--almacenar en sender_buffering
+				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);
+							LLU.Send(EP_Arry(i), CM.P_Buffer_Handler);
 						end if;
 						i:=i+1;
 					end loop;

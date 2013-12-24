@@ -32,4 +32,5 @@ package Zeug is
    function SchneidenString (EP_N: in LLU.End_Point_Type) return String;
    function Time_Image_One (T: Ada.Calendar.Time) return String;
    
+   
 end Zeug;
