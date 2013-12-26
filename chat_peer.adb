@@ -124,14 +124,20 @@ procedure Chat_Peer is
 		ASU.Unbounded_String'Output(CM.P_Buffer_Main, Nick);
 		Debug.Set_Status(Handlers.Purge);
 		i:=1;
+		--Almacenar en sender_dests
+     	--Sender_Dests.Put(S_Dests, Mess, Value);
 		Handlers.EP_Arry:=Handlers.Neighbors.Get_Keys(Handlers.N_Map);
 		while Handlers.EP_Arry(i) /= null loop			
 			if Handlers.EP_Arry(i) /= EP_H_Creat then
 				Zeug.Schneiden(Handlers.EP_Arry(i), Neighbour);
-				Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));	
+				Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
+					
 				--almacenar en sender_buffering
-				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);			
-				LLU.Send(Handlers.EP_Arry(i), CM.P_Buffer_Main);				
+				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);				
+				LLU.Send(Handlers.EP_Arry(i), CM.P_Buffer_Main);
+				--Programar Retransmision
+				Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);				
 			end if;
 			i:=i+1;
 		end loop;		
@@ -177,14 +183,19 @@ procedure Chat_Peer is
 		Debug.Put_Line(ASU.To_String(MyEP) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(MyEP) & " " & ASU.To_String(Nick));
 		--send all neighbors
 		i:=1;
+		--Almacenar en sender_dests
+     	--Sender_Dests.Put(S_Dests, Mess, Value);
 		Handlers.EP_Arry:=Handlers.Neighbors.Get_Keys(Handlers.N_Map);
 		while Handlers.EP_Arry(i) /= null loop			
 			if Handlers.EP_Arry(i) /= EP_H_Creat then
 				Zeug.Schneiden(Handlers.EP_Arry(i), Neighbour);
 				Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
 				--almacenar en sender_buffering
-				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);		
+				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);			
 				LLU.Send(Handlers.EP_Arry(i), CM.P_Buffer_Main);
+				--Programar Retransmision
+				Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);
 			end if;
 			i:=i+1;
 		end loop;
@@ -232,14 +243,19 @@ procedure Chat_Peer is
 					Debug.Put("FLOOD Writer ", Pantalla.Amarillo);
 					Debug.Put_Line(ASU.To_String(MyEP) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) &" " & ASU.To_String(MyEP) & " " & ASU.To_String(Nick) & " " & ASU.To_String(Text));        			
 					i:=1;
+					--Almacenar en sender_dests
+     	--Sender_Dests.Put(S_Dests, Mess, Value);
 					Handlers.EP_Arry:=Handlers.Neighbors.Get_Keys(Handlers.N_Map);
 					while Handlers.EP_Arry(i) /= null loop			
 						if Handlers.EP_Arry(i) /= EP_H_Creat then
 							Zeug.Schneiden(Handlers.EP_Arry(i), Neighbour);
 							--almacenar en sender_buffering
-				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);		
+				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);		
 							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
 							LLU.Send(Handlers.EP_Arry(i), CM.P_Buffer_Main);
+							--Programar Retransmision
+				Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+								Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);
 						end if;	
 						i:=i+1;
 					end loop;
@@ -266,6 +282,8 @@ procedure Chat_Peer is
 		Debug.Put("FLOOD Logout ", Pantalla.Amarillo);
 		Zeug.Schneiden(EP_H, MyEP);
 		Debug.Put_Line(ASU.To_String(MyEP) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(MyEP) & " " & ASU.To_String(Nick) & " " & Boolean'Image(Confirm_Sent));
+     	--Almacenar en sender_dests
+     	--Sender_Dests.Put(S_Dests, Mess, Value);
      	i:=1;
 		Handlers.EP_Arry:=Handlers.Neighbors.Get_Keys(Handlers.N_Map);
 		while Handlers.EP_Arry(i) /= null loop			
@@ -273,8 +291,11 @@ procedure Chat_Peer is
 				Zeug.Schneiden(Handlers.EP_Arry(i), Neighbour);
 				Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
 				--almacenar en sender_buffering
-				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);						
+				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);							
 				LLU.Send(Handlers.EP_Arry(i), CM.P_Buffer_Main);
+				--Programar Retransmision
+				Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);
 			end if;
 			i:=i+1;
 		end loop;		
@@ -285,17 +306,16 @@ procedure Chat_Peer is
 begin
 	Debug.Set_Status(Handlers.Purge);
    if Ada.Command_Line.Argument_Count = 5 or Ada.Command_Line.Argument_Count = 7 or Ada.Command_Line.Argument_Count = 9 then
-		min_delay:=Integer'Value(Ada.Command_Line.Argument(3));	
-		max_delay:=Integer'Value(Ada.Command_Line.Argument(4));
-		fault_pct:=Integer'Value(Ada.Command_Line.Argument(5));
-		if min_delay>max_delay then
+		
+		if Zeug.min_delay>Zeug.max_delay then
 			raise More_Error;
 		end if;
-		if (fault_pct>100) or (fault_pct<0) then
+		if (Zeug.fault_pct>100) or (Zeug.fault_pct<0) then
 			raise Fault_Error;
 		end if;   
 		--Para la simulacion de perdidas de paquetes
-		--LLU.Set_Faults_Percent(fault_pct);
+		--LLU.Set_Faults_Percent(Zeug.Fault_Pct);
+		--LLU.Set_Random_Propagation_Delay(Zeug.Min_Delay, Zeug.Max_Delay);
 		Zeug.Hafen(EP_H);
 		Zeug.Spitzname(Nick);		
 		LLU.Bind(EP_H, Handlers.EP_Handler'Access);

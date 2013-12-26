@@ -92,14 +92,19 @@ package body Chat_Handler is
 					Zeug.Schneiden(EP_R_Creat, EPHrsnd);
 					Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & ASU.To_String(EPHRsnd) & " ... " & ASU.To_String(Nick));
 					i:=1;
+					--Almacenar en sender_dests
+     	--Sender_Dests.Put(S_Dests, Mess, Value);
 					EP_Arry:=Neighbors.Get_Keys(N_Map);
 					while EP_Arry(i) /= null loop
 						if EP_Arry(i) /= EP_H_Rsnd then
 							Zeug.Schneiden(EP_Arry(i), Neighbour);
 							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-							--almacenar en sender_buffering
-				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);															
+						--almacenar en sender_buffering
+				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);														
 							LLU.Send(EP_Arry(i), P_Buffer);
+							--Programar Retransmision
+				Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);
 						end if;
 						i:=i+1;
 					end loop;
@@ -128,14 +133,19 @@ package body Chat_Handler is
 					Debug.Put_Line("    Añadimos a Latest_Msgs " & ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N)); 
 					Latest_Msgs.Put(M_Map, EP_H_Creat , Seq_N, Success);	
 					i:=1;
+					--Almacenar en sender_dests
+     	--Sender_Dests.Put(S_Dests, Mess, Value);
 					EP_Arry:=Neighbors.Get_Keys(N_Map);
 					while EP_Arry(i) /= null loop
 						if EP_Arry(i) /= EP_H_Rsnd then
 							Zeug.Schneiden(EP_Arry(i), Neighbour);
 							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
 							--almacenar en sender_buffering
-				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);
-							LLU.Send(EP_Arry(i), CM.P_Buffer_Handler);								
+				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);
+							LLU.Send(EP_Arry(i), CM.P_Buffer_Handler);	
+							--Programar Retransmision
+				Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);							
 						end if;
 						i:=i+1;
 					end loop;
@@ -166,14 +176,19 @@ package body Chat_Handler is
 				Latest_Msgs.Put(M_Map, EP_H_Creat , Seq_N, Success);	
 				Ada.Text_IO.Put_Line(ASU.To_String(Nick) & ": " & ASU.To_String(Text));
 				i:=1;
+				--Almacenar en sender_dests
+     	--Sender_Dests.Put(S_Dests, Mess, Value);
 				EP_Arry:=Neighbors.Get_Keys(N_Map);
 				while EP_Arry(i) /= null loop
 					if EP_Arry(i) /= EP_H_Rsnd then
 						Zeug.Schneiden(EP_Arry(i), Neighbour);
 						Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-						--almacenar en sender_buffering
-				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);
-						LLU.Send(EP_Arry(i), CM.P_Buffer_Handler);						
+					--almacenar en sender_buffering
+				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);
+						LLU.Send(EP_Arry(i), CM.P_Buffer_Handler);
+						--Programar Retransmision
+				Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);						
 					end if;
 					i:=i+1;
 				end loop;
@@ -208,14 +223,19 @@ package body Chat_Handler is
 					Boolean'Output(CM.P_Buffer_Handler, Confirm_Sent);
 					Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha salido del chat");
 					i:=1;
+					--Almacenar en sender_dests
+     	--Sender_Dests.Put(S_Dests, Mess, Value);
 					EP_Arry:=Neighbors.Get_Keys(N_Map);
 					while EP_Arry(i) /= null loop			
 						if EP_Arry(i) /= EP_H_Rsnd then
 							Zeug.Schneiden(EP_Arry(i), Neighbour);
 							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
 							--almacenar en sender_buffering
-				--P_Sender_Buffering.Put(Sender_Buffering, Hora_Rtx, Value_1);
+				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);
 							LLU.Send(EP_Arry(i), CM.P_Buffer_Handler);
+							--Programar Retransmision
+				Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);
 						end if;
 						i:=i+1;
 					end loop;

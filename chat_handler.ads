@@ -65,6 +65,8 @@ package NP_Sender_Dests is new Ordered_Maps_G (Key_Type => CM.Mess_Id_T,
 	package Latest_Msgs is new Maps_Protector_G (NP_Latest_Msgs);
 	N_Map : Neighbors.Prot_Map;  
 	M_Map : Latest_Msgs.Prot_Map;
+	S_Dests: Sender_Dests.Prot_Map;
+	S_Buffer: Sender_Buffering.Prot_Map;
 	EP_Arry : Neighbors.Keys_Array_Type;
 	Purge: Boolean:=True;
 	Prompt: Boolean:=False;

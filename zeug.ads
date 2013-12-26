@@ -31,6 +31,8 @@ package Zeug is
    procedure Name (prompt: in out Boolean);
    function SchneidenString (EP_N: in LLU.End_Point_Type) return String;
    function Time_Image_One (T: Ada.Calendar.Time) return String;
-   
+   min_delay:=Integer'Value(Ada.Command_Line.Argument(3));	
+		max_delay:=Integer'Value(Ada.Command_Line.Argument(4));
+		fault_pct:=Integer'Value(Ada.Command_Line.Argument(5));
    
 end Zeug;
