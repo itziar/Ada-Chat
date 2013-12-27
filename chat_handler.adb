@@ -49,10 +49,7 @@ package body Chat_Handler is
 			EP_H_Rsnd:=LLU.End_Point_Type'Input(P_Buffer);
 			EP_R_Creat:=LLU.End_Point_Type'Input(P_Buffer);
 			Nick:=ASU.Unbounded_String'Input(P_Buffer);	
-			Debug.Put("RCV Init ", Pantalla.Amarillo);	
-			Zeug.Schneiden(EP_H_Creat, EPHCreat);
-			Zeug.Schneiden(EP_R_Creat, EPRCreat);		
-			Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(EPRCreat) & "..." & ASU.To_String(Nick));    		
+			M_Debug.Receive (Bett, EP_H_Creat, Seq_N, EP_H_Rsnd, Nick);    		
 			LLU.Reset(P_Buffer.all);
 			if EP_H_Creat=EP_H_Rsnd then
 				M_Debug.New_Neighbour(EP_H_Creat);	
@@ -82,10 +79,7 @@ package body Chat_Handler is
 			EP_H_Rsnd:=LLU.End_Point_Type'Input(P_Buffer);
 			Nick:=ASU.Unbounded_String'Input(P_Buffer);
 			LLU.Reset(P_Buffer.all);
-			Debug.Put("RCV Confirm ", Pantalla.Amarillo);
-			Zeug.Schneiden(EP_H_Creat, EPHCreat);
-			Zeug.Schneiden(EP_H_Rsnd, EPHrsnd);
-			Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(EPHRsnd) & " " & ASU.To_String(Nick));
+			M_Debug.Receive (Bett, EP_H_Creat, Seq_N, EP_H_Rsnd, Nick);
 			Insta.Latest_Msgs.Get(Insta.M_Map, EP_H_Creat, Seq, Success);
 			if Seq_N > Seq then
 				Messages.Send_Confirm(EP_H_Creat, Seq_N, Zeug.EP_H, Nick);
@@ -101,10 +95,7 @@ package body Chat_Handler is
 			LLU.Reset(P_Buffer.all);
 			Insta.Latest_Msgs.Get(Insta.M_Map, EP_H_Creat, Seq, Success);
 			if Seq_N > Seq or not success then
-				Debug.Put("RCV Writer ", Pantalla.Amarillo);
-				Zeug.Schneiden(EP_H_Creat, EPHCreat);
-				Zeug.Schneiden(EP_H_Rsnd, EPHrsnd);
-				Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(EPHRsnd) & " " & ASU.To_String(Nick));
+				M_Debug.Receive (Bett, EP_H_Creat, Seq_N, EP_H_Rsnd, Nick);
 				Ada.Text_IO.Put_Line(ASU.To_String(Nick) & ": " & ASU.To_String(Text));
 				M_Debug.New_Message (EP_H_Creat, Seq_N);	
 				Messages.Send_Writer(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Text);
@@ -118,8 +109,7 @@ package body Chat_Handler is
 			LLU.Reset(P_Buffer.all);
 			Zeug.Schneiden(EP_H_Creat, EPHCreat);
 			Zeug.Schneiden(EP_H_Rsnd, EPHrsnd);
-			Debug.Put("RCV Logout ", Pantalla.Amarillo);					
-			Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(EPHRsnd) & " " & ASU.To_String(Nick));
+			M_Debug.Receive (Bett, EP_H_Creat, Seq_N, EP_H_Rsnd, Nick);
 			if EP_H_Creat = EP_H_Rsnd then
 				Debug.Put_Line("    Borramos de Neighbors " & ASU.To_String(EPHCreat));
 				Insta.Neighbors.Delete(Insta.N_Map, EP_H_Creat, Success);

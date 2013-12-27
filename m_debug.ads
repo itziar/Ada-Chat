@@ -33,5 +33,7 @@ package M_Debug is
 	procedure Send (EP: LLU.End_Point_Type);
 	procedure New_Neighbour(EP: LLU.End_Point_Type);
 	procedure New_Message (EP: LLU.End_Point_Type; Seq_N: Seq_N_T.Seq_N_Type);
+	procedure Receive (Bett: CM.Message_Type; EP_H_Creat:LLU.End_Point_Type; Seq_N: Seq_N_T.Seq_N_Type; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String);
+
 
 end M_Debug;

@@ -19,7 +19,6 @@ with Insta;
 with Maps_G;
 with Maps_Protector_G;
 with M_Debug;
-with Menus;
 
 
 package Messages is
