@@ -12,7 +12,7 @@ W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
 W system.soft_links%s	s-soflin.adb		s-soflin.ali
 W system.standard_library%s  s-stalib.adb	s-stalib.ali
 
-U menus%s		menus.ads		1a44d707 EE NE OO PK
+U menus%s		menus.ads		4aa15be4 EE NE OO PK
 W ada%s			ada.ads			ada.ali
 W ada.calendar%s	a-calend.adb		a-calend.ali
 W ada.command_line%s	a-comlin.adb		a-comlin.ali
@@ -55,7 +55,7 @@ D ada_sockets.ads	20080723100827 372c9145
 D c_sockets.ads		20120529214139 44862f45
 D c_sockets_arch.ads	20120529194800 c328cf60
 D chat_handler.ads	20131227091921 68f4f096
-D chat_messages.ads	20131224103729 e74b9714
+D chat_messages.ads	20131227145121 b7ae1bf7
 D concurrency.ads	20081111152635 d11dedce
 D debug.ads		20131119133210 410922c8
 D gnat.ads		20050905075125 fd2ad2f1
@@ -137,7 +137,7 @@ X 23 chat_handler.ads
 17K9*Chat_Handler 37e17 45|7w6 32r34
 X 24 chat_messages.ads
 13K9*Chat_Messages 74e18 45|15w6 26r28
-22E14*Message_Type 22e69 45|27r21
+22E14*Message_Type 22e74 45|27r21
 X 26 debug.ads
 3K9*Debug 24e10 45|13w6 46|12r17 13r17 14r17 16r17 22r17 23r17 24r17 26r17
 . 37r17 43r17 44r17 45r17 46r17 47r17 48r17 49r17 50r17 51r17

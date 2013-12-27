@@ -22,43 +22,117 @@ with M_Debug;
 procedure Chat_Peer is
 	package CM renames Chat_Messages;
 	use type CM.Message_Type;
-   package LLU renames Lower_Layer_UDP;
-   use type LLU.End_Point_Type;
-   package ASU renames Ada.Strings.Unbounded;
+	package LLU renames Lower_Layer_UDP;
+	use type LLU.End_Point_Type;
+	package ASU renames Ada.Strings.Unbounded;
 	use type Seq_N_T.Seq_N_Type;
 	package Handlers renames Chat_Handler;
 
-   Usage_Error   : exception;
-   Host			  : ASU.Unbounded_String;
-	Port			  : ASU.Unbounded_String;
-	IP				  : ASU.Unbounded_String;
-	EP_H			  : LLU.End_Point_Type;
-   EP_R			  : LLU.End_Point_Type;
-   EP_H_Creat	  : LLU.End_Point_Type;
-   EP_H_Rsnd	  : LLU.End_Point_Type;
-   Seq_N			  : Seq_N_T.Seq_N_Type:=1;
-   Nb1Host		  : ASU.Unbounded_String;
-	Nb1Port		  : ASU.Unbounded_String;
-	Nb1IP			  : ASU.Unbounded_String;
-	EP_Nb1		  : LLU.End_Point_Type;
-   Nb2Host		  : ASU.Unbounded_String;
-	Nb2Port		  : ASU.Unbounded_String;
-	Nb2IP			  : ASU.Unbounded_String;
-	EP_Nb2		  : LLU.End_Point_Type;
-	Nick			  : ASU.Unbounded_String;
-   Text			  : ASU.Unbounded_String;
-   Expired		  : Boolean := False;
-   Acept			  : Boolean:= True; --CAMBIARLO A FALSE CUANDO TERMINE DE ORGANIZAR
-   Confirm_Sent  : Boolean;
-	EP_N			  : ASU.Unbounded_String;
-	Neighbour	  : ASU.Unbounded_String;
+	Usage_Error : exception;
+	Host : ASU.Unbounded_String;
+	Port : ASU.Unbounded_String;
+	IP : ASU.Unbounded_String;
+	EP_H : LLU.End_Point_Type;
+	EP_R : LLU.End_Point_Type;
+	Seq_N : Seq_N_T.Seq_N_Type:=1;
+	Nb1Host : ASU.Unbounded_String;
+	Nb1Port : ASU.Unbounded_String;
+	Nb1IP : ASU.Unbounded_String;
+	EP_Nb1 : LLU.End_Point_Type;
+	Nb2Host : ASU.Unbounded_String;
+	Nb2Port : ASU.Unbounded_String;
+	Nb2IP : ASU.Unbounded_String;
+	EP_Nb2 : LLU.End_Point_Type;
+	Nick : ASU.Unbounded_String;
+	Text : ASU.Unbounded_String;
+	Expired : Boolean := False;
+	Acept : Boolean:= False;
+	Confirm_Sent : Boolean;
+	EP_N : ASU.Unbounded_String;
+	Neighbour : ASU.Unbounded_String;
+	MyEP : ASU.Unbounded_String;
+	EPHA : ASU.Unbounded_String;
+	REP : ASU.Unbounded_String;
+	More_Error : exception;
+	Fault_Error : exception;
+	Bad_Port : exception;
+	Argument : Integer;
+
+	--PARA LOS MENUS
+	--NEIGHBORS 
+	procedure Neighbors is
+	begin
+		Debug.Put_Line("                      Neighbors", Pantalla.Rojo);
+		Debug.Put_Line("                      --------------------", Pantalla.Rojo);
+		Debug.Put("                     [", Pantalla.Rojo);
+		Insta.Neighbors.Print_Map(Insta.N_Map);
+		Debug.Put_Line(" ]", Pantalla.Rojo);
+	end Neighbors;
+
+	--LATEST MESSAGES--
+	procedure L_Messages is
+	begin
+		Debug.Put_Line("                      Latest_Msgs", Pantalla.Rojo);
+		Debug.Put_Line("                      --------------------", Pantalla.Rojo);
+		Debug.Put("                     [", Pantalla.Rojo);
+		Insta.Latest_Msgs.Print_Map(Insta.M_Map);
+		Debug.Put_Line(" ]", Pantalla.Rojo);
+	end L_Messages;
+
+	--SHOW NICKNAME | EP_H |EP_R --
+	procedure Nickname is
 	MyEP			  : ASU.Unbounded_String;
-	EPHA			  : ASU.Unbounded_String;
 	REP			  : ASU.Unbounded_String;
-	More_Error: exception;
-	Fault_Error: exception;
-	Bad_Port: exception;
-	Argument: Integer;
+	begin
+		Ada.Text_IO.Put_Line("muestra en pantalla nick | EP_H | EP_R");
+		Zeug.Schneiden(EP_H, MyEP);
+		Zeug.Schneiden(EP_R, REP);
+		Debug.Put_Line("Nick: " & ASU.To_String(Zeug.Nick) & " | EP_H: " & ASU.To_String(MyEP) & " | EP_R: " & ASU.To_String(REP), Pantalla.Rojo);
+	end Nickname;
+		
+	--HELP--
+	procedure Help is
+	begin
+		Debug.Put_Line("              Comandos            Efectos", Pantalla.Rojo);
+		Debug.Put_Line("              =================   =======", Pantalla.Rojo);
+		Debug.Put_Line("              .nb .neighbors      lista de vecinos", Pantalla.Rojo);
+		Debug.Put_Line("              .lm .latest_msgs    lista de últimos mensajes recibidos", Pantalla.Rojo);
+		Debug.Put_Line("              .debug              toggle para info de debug", Pantalla.Rojo);
+		Debug.Put_Line("              .wai .whoami        Muestra en pantalla: nick | EP_H | EP_R", Pantalla.Rojo);
+		Debug.Put_Line("              .prompt             toggle para mostrar prompt", Pantalla.Rojo);
+		Debug.Put_Line("              .h .help            muestra esta información de ayuda", Pantalla.Rojo);
+		Debug.Put_Line("              .salir              termina el programa", Pantalla.Rojo);
+	end Help; 
+	--
+
+	procedure Loop_Writer is
+	begin
+		loop
+			Debug.Set_Status(True);
+			if Handlers.prompt then
+				Ada.Text_IO.Put(ASU.To_String(Nick) & " >> ");
+			end if;
+			Text:= ASU.To_Unbounded_String(Ada.Text_IO.Get_Line);
+			if ASU.To_String(Text) /= ".salir" then
+				if ASU.To_String(Text)=".nb" or ASU.To_String(Text)=".neighbors" then
+					Neighbors;
+				elsif ASU.To_String(Text)=".lm" or ASU.To_String(Text)=".latest_msgs" then
+					L_Messages;
+				elsif ASU.To_String(Text)=".debug" then
+					Zeug.Information(Handlers.Purge);
+				elsif ASU.To_String(Text)=".wai" or ASU.To_String(Text)=".whoami" then
+					Nickname;
+				elsif ASU.To_String(Text)=".prompt" then
+					Zeug.Name(Handlers.Prompt);
+				elsif ASU.To_String(Text)=".h" or ASU.To_String(Text)=".help" then
+					Help;
+				else
+					Messages.Send_Writer(EP_H, Seq_N, EP_H, Zeug.Nick, Text);
+				end if;
+			end if;
+		exit when ASU.To_String(Text)=".salir";
+		end loop;
+	end Loop_Writer;
 
 --CUERPO DEL PROGRAMA PRINCIPAL
 begin
@@ -115,9 +189,9 @@ begin
 		Debug.Put("FLOOD Init ", Pantalla.Amarillo);
 		Zeug.Schneiden(EP_H, MyEP);
 		Debug.Put_Line(ASU.TO_String(MyEP) & " " & ASU.To_String(MyEP) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N));
-		Messages.Send_Init (EP_H, Seq_N, EP_H, EP_R, Zeug.Nick);
+		Messages.Send_Init(EP_H, Seq_N, EP_H, EP_R, Zeug.Nick);
 		Ada.Text_IO.Put_Line(" ");
-		Messages.Receive_Reject (EP_R, acept);
+		Messages.Receive_Reject(EP_R, acept);
 		if acept then
 			M_Debug.New_Message(EP_H, Seq_N);
 			Messages.Send_Confirm(EP_H,Seq_N,EP_H, Zeug.Nick);
@@ -134,7 +208,7 @@ begin
 		Ada.Text_IO.Put_Line(" ");
 		Ada.Text_IO.Put_Line("Entramos en el chat con Nick: " & ASU.To_String(Nick));
 		Ada.Text_IO.Put_Line(".h para help");
-		Messages.Send_Writer(EP_H, Seq_N, EP_H, Zeug.Nick);
+		Loop_Writer;
 		Confirm_Sent:=True;
 		Messages.Send_Logout(EP_H, Seq_N, EP_H, Zeug.Nick, Confirm_Sent);
 	end if; 

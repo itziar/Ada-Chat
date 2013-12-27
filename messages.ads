@@ -31,8 +31,6 @@ package Messages is
 	use type Seq_N_T.Seq_N_Type;
 	package Handlers renames Chat_Handler;
 
----------------------------------------------------------------------------------------------------------------
-
 	--MENSAJE INIT--
 	procedure Send_Init (EP_H_Creat: in LLU.End_Point_Type; Seq_N: in out Seq_N_T.Seq_N_Type; EP_H_Rsnd: in LLU.End_Point_Type; EP_R_Creat: in LLU.End_Point_Type; nick: in out ASU.Unbounded_String);
 ---------------------------------------------------------------------------------------------------------------	
@@ -46,11 +44,13 @@ package Messages is
 ---------------------------------------------------------------------------------------------------------------
 
 	--MENSAJE WRITER--	
-	procedure Send_Writer(EP_H_Creat: LLU.End_Point_Type; Seq_N: in out Seq_N_T.Seq_N_Type; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String);
+	procedure Send_Writer(EP_H_Creat: LLU.End_Point_Type; Seq_N: in out Seq_N_T.Seq_N_Type; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String; Text: ASU.Unbounded_String);
 ---------------------------------------------------------------------------------------------------------------
 
 	--MENSAJE LOGOUT--
 	procedure Send_Logout (EP_H_Creat: LLU.End_Point_Type; Seq_N: in out Seq_N_T.Seq_N_Type; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String; Confirm_Sent: in out Boolean);	
 ---------------------------------------------------------------------------------------------------------------
-
+	
+	--MENSAJE ACK--
+	procedure Send_Ack(EP_H_Acker: LLU.End_Point_Type; EP_H_Creat: LLU.End_Point_Type; Seq_N: Seq_N_T.Seq_N_Type; EP_Dest: LLU.End_Point_Type);
 end Messages;

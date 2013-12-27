@@ -11,41 +11,38 @@ with Pantalla;
 with Zeug;
 with Insta;
 with Messages;
+with M_Debug;
 
 package body Chat_Handler is
 
-	
 	use type CM.Message_Type;  
 	use type Seq_N_T.Seq_N_Type;
 
-   procedure EP_Handler (From    : in     LLU.End_Point_Type;
-                           To      : in     LLU.End_Point_Type;
-                           P_Buffer: access LLU.Buffer_Type) is
-    	Bett: CM.Message_Type;
-    	EP_H_Creat: LLU.End_Point_Type;
-    	Seq_N: Seq_N_T.Seq_N_Type;
-    	Seq: Seq_N_T.Seq_N_Type;
-    	EP_H_Rsnd: LLU.End_Point_Type;
-    	EP_R_Creat: LLU.End_Point_Type;
-    	Nick: ASU.Unbounded_String;
-    	EP_H: LLU.End_Point_Type;
-		Nickname: ASU.Unbounded_String;		
-    	Text: ASU.Unbounded_String;
-    	Confirm_Sent: Boolean;
-  	   Value   : ASU.Unbounded_String;
-	   Success : Boolean;
-	   Neighbour: ASU.Unbounded_String;
+	procedure EP_Handler (From    : in     LLU.End_Point_Type;
+						To      : in     LLU.End_Point_Type;
+						P_Buffer: access LLU.Buffer_Type) is
+		Bett: CM.Message_Type;
+		EP_H_Creat: LLU.End_Point_Type;
+		Seq_N: Seq_N_T.Seq_N_Type;
+		Seq: Seq_N_T.Seq_N_Type;
+		EP_H_Rsnd: LLU.End_Point_Type;
+		EP_R_Creat: LLU.End_Point_Type;
+		Nick: ASU.Unbounded_String;
+		EP_H: LLU.End_Point_Type;
+		Text: ASU.Unbounded_String;
+		Confirm_Sent: Boolean;
+		Value   : ASU.Unbounded_String;
+		Success : Boolean;
+		Neighbour: ASU.Unbounded_String;
 		i: integer;
 		EPHCreat: ASU.Unbounded_String;
 		EPRCreat: ASU.Unbounded_String;
 		EPHRsnd: ASU.Unbounded_String;
 		MyEP: ASU.Unbounded_String;
-		Zeit: Ada.Calendar.Time;
-   begin
+	begin
 		Debug.Set_Status(Purge);
- 		Zeug.Hafen(EP_H);
-  		Zeug.Spitzname(nickname);
-   		Bett:=CM.Message_Type'Input(P_Buffer);
+		Zeug.Hafen(EP_H);
+		Bett:=CM.Message_Type'Input(P_Buffer);
 		if Bett=CM.Init then
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
 			Seq_N:=Seq_N_T.Seq_N_Type'Input(P_Buffer);
@@ -58,55 +55,24 @@ package body Chat_Handler is
 			Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(EPRCreat) & "..." & ASU.To_String(Nick));    		
 			LLU.Reset(P_Buffer.all);
 			if EP_H_Creat=EP_H_Rsnd then
-				Debug.Put_Line("    Añadimos a neighbors " & ASU.To_String(EPHCreat));
-				Zeit:= Ada.Calendar.Clock;
-				Insta.Neighbors.Put(Insta.N_Map, EP_H_Creat , Zeit, Success);	
+				M_Debug.New_Neighbour(EP_H_Creat);	
 			end if;
-			if nick = nickname then
+			if Nick = Zeug.Nick then
 				--envio mensaje reject
 				Zeug.Schneiden(EP_H, MyEP);
 				Debug.Put("Send Reject ", Pantalla.Amarillo);
 				Debug.Put_Line(ASU.To_String(MyEP) & " " & ASU.To_String(Nick));
 				CM.Message_Type'Output (P_Buffer, CM.Reject);
 				LLU.End_Point_Type'Output(P_Buffer, EP_H);
-				ASU.Unbounded_String'Output(P_Buffer, Nickname);
+				ASU.Unbounded_String'Output(P_Buffer, Nick);
 				LLU.Send(EP_R_Creat, P_Buffer);
 				LLU.Reset(P_Buffer.all);			
 			else
 				Insta.Latest_Msgs.Get(Insta.M_Map, EP_H_Creat, Seq, Success);
 				if not success then
-					Chat_Messages.P_Buffer_Handler := new LLU.Buffer_Type(1024);
-					CM.Message_Type'Output (P_Buffer, CM.Init);
-					LLU.End_Point_Type'Output (P_Buffer, EP_H_Creat);
-					Seq_N:=Seq_N;
-					Seq_N_T.Seq_N_Type'Output(P_Buffer, Seq_N); 
-					LLU.End_Point_Type'Output (P_Buffer, EP_H);
-					LLU.End_Point_Type'Output (P_Buffer, EP_R_Creat);
-					ASU.Unbounded_String'Output(P_Buffer, Nick);
-
-					Debug.Put_Line("    Añadimos a latest_messages " & ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N));
-					Insta.Latest_Msgs.Put(Insta.M_Map, EP_H_Creat , Seq_N, Success);	
-					Debug.Put("    FLOOD Init ", Pantalla.Amarillo);
-					Zeug.Schneiden(EP_H_Creat, EPHCreat);
-					Zeug.Schneiden(EP_R_Creat, EPHrsnd);
-					Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & ASU.To_String(EPHRsnd) & " ... " & ASU.To_String(Nick));
-					i:=1;
-					--Almacenar en sender_dests
-     	--Sender_Dests.Put(S_Dests, Mess, Value);
-					Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
-					while Insta.EP_Arry(i) /= null loop
-						if Insta.EP_Arry(i) /= EP_H_Rsnd then
-							Zeug.Schneiden(Insta.EP_Arry(i), Neighbour);
-							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-						--almacenar en sender_buffering
-				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);														
-							LLU.Send(Insta.EP_Arry(i), P_Buffer);
-							--Programar Retransmision
-				--Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
-				--Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);
-						end if;
-						i:=i+1;
-					end loop;
+					M_Debug.New_Message (EP_H_Creat, Seq_N);
+					--ENVIAR INIT
+					Messages.Send_Init(EP_H_Creat, Seq_N, Zeug.EP_H, EP_R_Creat, Nick);
 				end if;
 			end if;
 			
@@ -122,35 +88,10 @@ package body Chat_Handler is
 			Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(EPHRsnd) & " " & ASU.To_String(Nick));
 			Insta.Latest_Msgs.Get(Insta.M_Map, EP_H_Creat, Seq, Success);
 			if Seq_N > Seq then
-					CM.P_Buffer_Handler := new LLU.Buffer_Type(1024);
-					CM.Message_Type'Output(CM.P_Buffer_Handler, CM.Confirm);
-					LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H_Creat);
-					Seq_N_T.Seq_N_Type'Output(CM.P_Buffer_Handler, Seq_N); 
-					LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H);
-					ASU.Unbounded_String'Output(CM.P_Buffer_Handler, Nick);
-					Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha entrado en el chat");
-					Debug.Put_Line("    Añadimos a Latest_Msgs " & ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N)); 
-					Insta.Latest_Msgs.Put(Insta.M_Map, EP_H_Creat , Seq_N, Success);	
-					i:=1;
-					--Almacenar en sender_dests
-     	--Sender_Dests.Put(S_Dests, Mess, Value);
-					Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
-					while Insta.EP_Arry(i) /= null loop
-						if Insta.EP_Arry(i) /= EP_H_Rsnd then
-							Zeug.Schneiden(Insta.EP_Arry(i), Neighbour);
-							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-							--almacenar en sender_buffering
-				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);
-							LLU.Send(Insta.EP_Arry(i), CM.P_Buffer_Handler);	
-							--Programar Retransmision
-				--Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
-				--Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);							
-						end if;
-						i:=i+1;
-					end loop;
-				end if;
-						
-			--send all neighbors
+				Messages.Send_Confirm(EP_H_Creat, Seq_N, Zeug.EP_H, Nick);
+				Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha entrado en el chat");
+				M_Debug.New_Message (EP_H_Creat, Seq_N);					
+			end if;
 		elsif Bett=CM.Writer then
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
 			Seq_N:=Seq_N_T.Seq_N_Type'Input(P_Buffer);
@@ -160,37 +101,13 @@ package body Chat_Handler is
 			LLU.Reset(P_Buffer.all);
 			Insta.Latest_Msgs.Get(Insta.M_Map, EP_H_Creat, Seq, Success);
 			if Seq_N > Seq or not success then
-				CM.P_Buffer_Handler := new LLU.Buffer_Type(1024);
-				CM.Message_Type'Output(CM.P_Buffer_Handler, CM.Writer);
-				LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H_Creat);
-				Seq_N_T.Seq_N_Type'Output(CM.P_Buffer_Handler, Seq_N); 
-				LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H);
-				ASU.Unbounded_String'Output(CM.P_Buffer_Handler, Nick);		
-				ASU.Unbounded_STring'Output(CM.P_Buffer_Handler, Text);
 				Debug.Put("RCV Writer ", Pantalla.Amarillo);
 				Zeug.Schneiden(EP_H_Creat, EPHCreat);
 				Zeug.Schneiden(EP_H_Rsnd, EPHrsnd);
 				Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(EPHRsnd) & " " & ASU.To_String(Nick));
-				Debug.Put_Line("    Añadimos a Latest_Msgs " & ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N));
-				Insta.Latest_Msgs.Put(Insta.M_Map, EP_H_Creat , Seq_N, Success);	
 				Ada.Text_IO.Put_Line(ASU.To_String(Nick) & ": " & ASU.To_String(Text));
-				i:=1;
-				--Almacenar en sender_dests
-     	--Sender_Dests.Put(S_Dests, Mess, Value);
-				Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
-				while Insta.EP_Arry(i) /= null loop
-					if Insta.EP_Arry(i) /= EP_H_Rsnd then
-						Zeug.Schneiden(Insta.EP_Arry(i), Neighbour);
-						Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-					--almacenar en sender_buffering
-				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);
-						LLU.Send(Insta.EP_Arry(i), CM.P_Buffer_Handler);
-						--Programar Retransmision
-				--Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
-				--Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);						
-					end if;
-					i:=i+1;
-				end loop;
+				M_Debug.New_Message (EP_H_Creat, Seq_N);	
+				Messages.Send_Writer(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Text);
 			end if;
 		elsif Bett=CM.Logout then
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
@@ -212,39 +129,19 @@ package body Chat_Handler is
 				Debug.Put_Line("    Borramos de Latest_Msgs " & ASU.To_String(EPHCreat));
 				Insta.Latest_Msgs.Delete(Insta.M_Map, EP_H_Creat, Success);
 				if Confirm_Sent then	
-					CM.P_Buffer_Handler := new LLU.Buffer_Type(1024);
-					CM.Message_Type'Output(CM.P_Buffer_Handler, CM.Logout);
-					LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H_Creat);
-					Seq_N:=Seq_N;
-					Seq_N_T.Seq_N_Type'Output(CM.P_Buffer_Handler, Seq_N); 
-					LLU.End_Point_Type'Output(CM.P_Buffer_Handler, EP_H);
-					ASU.Unbounded_String'Output(CM.P_Buffer_Handler, Nick);									
-					Boolean'Output(CM.P_Buffer_Handler, Confirm_Sent);
 					Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha salido del chat");
-					i:=1;
-					--Almacenar en sender_dests
-     	--Sender_Dests.Put(S_Dests, Mess, Value);
-					Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
-					while Insta.EP_Arry(i) /= null loop			
-						if Insta.EP_Arry(i) /= EP_H_Rsnd then
-							Zeug.Schneiden(Insta.EP_Arry(i), Neighbour);
-							Debug.Put_Line("      send to: " & ASU.To_String(Neighbour));
-							--almacenar en sender_buffering
-				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);
-							LLU.Send(Insta.EP_Arry(i), CM.P_Buffer_Handler);
-							--Programar Retransmision
-				--Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
-				--Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);
-						end if;
-						i:=i+1;
-					end loop;
+					Messages.Send_Logout(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Confirm_Sent);			
+					CM.P_Buffer_Handler := new LLU.Buffer_Type(1024);
 				end if;
 			end if;
+		elsif Bett=CM.Ack then
+			--procesar mensaje ack
+			i:=1;
 		end if;
 		if prompt then
-			Ada.Text_IO.Put(ASU.To_String(Nickname) & " >> ");
+			Ada.Text_IO.Put(ASU.To_String(Zeug.Nick) & " >> ");
 		end if;
-   end EP_Handler;
+	end EP_Handler;
 
 end Chat_Handler;
 

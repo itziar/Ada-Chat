@@ -19,7 +19,7 @@ package Chat_Messages is
 	use Ada.Strings.Fixed;
 	use Ada.Strings.Unbounded;
 
-	type Message_Type is (Init, Reject, Confirm, Writer, Logout);
+	type Message_Type is (Init, Reject, Confirm, Writer, Logout, Ack);
 
 	type Mess_Id_T is record
 		EP: LLU.End_Point_Type;
