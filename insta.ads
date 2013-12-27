@@ -1,3 +1,11 @@
+--
+--ITZIAR POLO MARTINEZ
+--TECNOLOGIAS
+--
+
+with Lower_Layer_UDP;
+with maps_g;
+with maps_protector_g;
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
 with Seq_N_T;
@@ -8,14 +16,14 @@ with Ordered_Maps_Protector_G;
 
 package Insta is
 
-	package ASU renames Ada.Strings.Unbounded;
+package ASU renames Ada.Strings.Unbounded;
 	use type ASU.Unbounded_String;
 	package LLU renames Lower_Layer_UDP;
 	use Lower_Layer_UDP;
 	package CM renames Chat_Messages;
 	use type ASU.Unbounded_String;
-	use type Ada.Calendar.Time;
-	use type CM.Message_Type;
+   use type Ada.Calendar.Time;
+   use type CM.Message_Type;
 	use type Seq_N_T.Seq_N_Type;
 
 	package NP_Neighbors is new Maps_G (Key_Type => LLU.End_Point_Type,

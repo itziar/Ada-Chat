@@ -28,11 +28,16 @@ package Zeug is
 	procedure Hafen (EP_H: in out LLU.End_Point_Type);
 	procedure Schneiden (EP_N: in LLU.End_Point_Type; Neighbour: out ASU.Unbounded_String);	
 	procedure Information (Purge: in out Boolean);
-   procedure Name (prompt: in out Boolean);
+   	procedure Name (prompt: in out Boolean);
    function SchneidenString (EP_N: in LLU.End_Point_Type) return String;
    function Time_Image_One (T: Ada.Calendar.Time) return String;
-   min_delay:=Integer'Value(Ada.Command_Line.Argument(3));	
-		max_delay:=Integer'Value(Ada.Command_Line.Argument(4));
-		fault_pct:=Integer'Value(Ada.Command_Line.Argument(5));
+   min_delay:Integer:=Integer'Value(Ada.Command_Line.Argument(3));	
+		max_delay:Integer:=Integer'Value(Ada.Command_Line.Argument(4));
+		fault_pct:Integer:=Integer'Value(Ada.Command_Line.Argument(5));
+		port: Integer:= Integer'Value(Ada.Command_Line.Argument(1));
+		Host:ASU.Unbounded_String:= ASU.To_Unbounded_String(LLU.Get_Host_Name);
+		IP:ASU.Unbounded_String:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(Host)));
+		Nick:ASU.Unbounded_String:=ASU.To_Unbounded_String(Ada.Command_Line.Argument(2));
+	EP_H: LLU.End_Point_Type:=LLU.Build (ASU.To_String(IP), Port);
    
 end Zeug;
