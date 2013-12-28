@@ -3,7 +3,7 @@ M P W=b
 P SS ZX
 R nnnnnnnvnvvnnnnnnnvvnvnnnvvnnnnnnnvnnnnnnvnnvnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnn
 
-U chat_peer%b		chat_peer.adb		7e3d5a3b NE OO SU
+U chat_peer%b		chat_peer.adb		2ea2d63b NE OO SU
 W ada%s			ada.ads			ada.ali
 W ada.calendar%s	a-calend.adb		a-calend.ali
 W ada.command_line%s	a-comlin.adb		a-comlin.ali
@@ -80,10 +80,10 @@ D lower_layer-inet.ads	20080723100827 1d47d264
 D lower_layer-inet-udp.ads  20080723100827 60f0483f
 D lower_layer-inet-udp-uni.ads  20080723100827 c94f5d30
 D lower_layer_udp.ads	20080723100827 ec2df04c
-D m_debug.ads		20131227162319 c3dc9fed
+D m_debug.ads		20131228183256 e8f89f2e
 D maps_g.ads		20131119133217 b8881b4e
 D maps_protector_g.ads	20131119133219 c05e88d5
-D messages.ads		20131227162225 66177cd1
+D messages.ads		20131228183549 1dacf012
 D ordered_maps_g.ads	20131224090251 d79544de
 D ordered_maps_protector_g.ads  20131224090253 040782e0
 D pantalla.ads		20131119133222 9c520c57
@@ -245,19 +245,19 @@ X 42 lower_layer_udp.ads
 74U14*Bind_Any 25|156s13
 148U14*Finalize 25|215s13 220s21 223s21 226s21 229s21 234s21
 X 43 m_debug.ads
-24K9*M_Debug 25|20w6 170r17 182r17 183r17 188r17 196r25 43|39e12
+24K9*M_Debug 25|20w6 170r17 182r17 183r17 188r17 196r25 43|41e12
 34U19*New_Neighbour 25|170s25 182s25 183s25
 35U19*New_Message 25|188s25 196s33
 X 45 maps_protector_g.ads
 7W9*Prot_Map
 34U14*Print_Map 25|68s33[31|37] 78s35[31|47]
 X 46 messages.ads
-24K9*Messages 25|19w6 130r41 192r17 194r17 197r25 201r25 213r17 46|55e13
+24K9*Messages 25|19w6 130r41 192r17 194r17 197r25 201r25 213r17 46|56e13
 34U19*Send_Init 25|192s26
 38U19*Receive_Reject 25|194s26
-42U19*Send_Confirm 25|197s34
-46U19*Send_Writer 25|130s50
-50U19*Send_Logout 25|201s34 213s26
+43U19*Send_Confirm 25|197s34
+47U19*Send_Writer 25|130s50
+51U19*Send_Logout 25|201s34 213s26
 X 49 pantalla.ads
 11K9*Pantalla 25|13w6 65r67 66r78 67r53 69r38 75r69 76r78 77r53 79r38 90r140
 . 96r77 97r77 98r86 99r106 100r95 101r109 102r96 103r104 104r89 189r42 233r87

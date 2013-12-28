@@ -36,6 +36,7 @@ package Messages is
 	
 	--MENSAJE REJECT--
 	procedure Receive_Reject (EP_R: LLU.End_Point_Type; acept: out Boolean);
+	procedure Send_Reject (EP_H: LLU.End_Point_Type; Nick: ASU.Unbounded_String; EP_R_Creat: LLU.End_Point_Type);
 ---------------------------------------------------------------------------------------------------------------
 
 	--MENSAJE CONFIRM--

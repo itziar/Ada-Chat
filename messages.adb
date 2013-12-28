@@ -7,8 +7,6 @@
 package body Messages is
 
 	procedure Send_Init (EP_H_Creat: in LLU.End_Point_Type; Seq_N: in out Seq_N_T.Seq_N_Type; EP_H_Rsnd: in LLU.End_Point_Type; EP_R_Creat: in LLU.End_Point_Type; nick: in out ASU.Unbounded_String) is
-		i: integer;
-		Neighbour	  : ASU.Unbounded_String;
 	begin
 		CM.P_Buffer_Main:=new llu.buffer_type(1024);
 		CM.Message_Type'Output (CM.P_Buffer_Main, CM.Init);
@@ -18,12 +16,11 @@ package body Messages is
 		LLU.End_Point_Type'Output (CM.P_Buffer_Main, EP_R_Creat);
 		ASU.Unbounded_String'Output(CM.P_Buffer_Main, Nick);
 		Debug.Set_Status(Handlers.Purge);
-		i:=1;
 		--Almacenar en sender_dests
 		--Sender_Dests.Put(S_Dests, Mess, Value);
 		Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
-		while Insta.EP_Arry(i) /= null loop			
-			if Insta.EP_Arry(i) /= EP_H_Creat then
+		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
+   			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
 				M_Debug.Send(Insta.EP_Arry(i));
 				--almacenar en sender_buffering
 				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);				
@@ -32,7 +29,6 @@ package body Messages is
 				--Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
 				--Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);				
 			end if;
-			i:=i+1;
 		end loop;		
 	end Send_Init; 
 ---------------------------------------------------------------------------------------------------------------	
@@ -61,6 +57,16 @@ package body Messages is
 			acept:= True;
 		end if;	
 	end Receive_Reject;
+
+	procedure Send_Reject (EP_H: LLU.End_Point_Type; Nick: ASU.Unbounded_String; EP_R_Creat: LLU.End_Point_Type) is
+		P_Buffer: aliased LLU.Buffer_Type(1024);
+	begin
+		LLU.Reset(P_Buffer);
+		CM.Message_Type'Output(P_Buffer'Access, CM.Reject);
+		LLU.End_Point_Type'Output(P_Buffer'Access, EP_H);
+		ASU.Unbounded_String'Output(P_Buffer'Access, Nick);
+		LLU.Send(EP_R_Creat, P_Buffer'Access);
+	end Send_Reject;
 
 ---------------------------------------------------------------------------------------------------------------
 
