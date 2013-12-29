@@ -3,16 +3,24 @@
 --TECNOLOGIAS
 --
 
-with Lower_Layer_UDP;
-with maps_g;
-with maps_protector_g;
+with Ada.Command_Line;
+with Ada.Text_IO;
+with Ada.Exceptions;
 with Ada.Strings.Unbounded;
 with Ada.Calendar;
-with Seq_N_T;
-with Zeug;
 with Chat_Messages;
+with Debug;
+with Insta;
+with Lower_Layer_UDP;
+with Messages;
+with M_Debug;
+with Maps_G;
+with Maps_Protector_G;
 with Ordered_Maps_G;
 with Ordered_Maps_Protector_G;
+with Pantalla;
+with Retrans;
+with Zeug;
 
 package Chat_Handler is
 	package ASU renames Ada.Strings.Unbounded;
@@ -20,14 +28,11 @@ package Chat_Handler is
 	package LLU renames Lower_Layer_UDP;
 	use Lower_Layer_UDP;
 	package CM renames Chat_Messages;
-	use type ASU.Unbounded_String;
-   use type Ada.Calendar.Time;
-   use type CM.Message_Type;
-	use type Seq_N_T.Seq_N_Type;
+	use type Ada.Calendar.Time;
+	use type CM.Message_Type;
+	use type CM.Seq_N_T;
 
-
-	Purge: Boolean:=True;
-	Prompt: Boolean:=False;
+	
 	-- This procedure must NOT be called. It's called from LLU
 	procedure EP_Handler (From     : in     LLU.End_Point_Type;
 													To       : in     LLU.End_Point_Type;

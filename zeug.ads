@@ -39,5 +39,7 @@ package Zeug is
 		IP:ASU.Unbounded_String:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(Host)));
 		Nick:ASU.Unbounded_String:=ASU.To_Unbounded_String(Ada.Command_Line.Argument(2));
 	EP_H: LLU.End_Point_Type:=LLU.Build (ASU.To_String(IP), Port);
-   
+   Purge: Boolean:=True;
+	Prompt: Boolean:=False;
+	
 end Zeug;

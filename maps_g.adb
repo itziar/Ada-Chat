@@ -39,68 +39,69 @@ package body Maps_G is
                   Value : Value_Type;
                   Success: out Boolean) is
       P_Aux : Cell_A;
-      Found : Boolean;
-  --    Max_Length: Natural;
-      i: Integer;
-      Neu : Cell_A := new Cell'(Key=> Key, Value=>Value ,Next => null,Prev => null);
+      Found : Boolean:= False;
+      Neu : Cell_A := new Cell'(Key,Value,null,null);
    begin
       -- Si ya existe Key, cambiamos su Value
       P_Aux := M.P_First;
-      Found := False;
-      i:=0;
+      Success := False;
       while not Found and P_Aux /= null loop
          if P_Aux.Key = Key then
             P_Aux.Value := Value;
             Found := True;
-            Success:= True;  
          end if;
-         i:=i+1;
          P_Aux := P_Aux.Next;
       end loop;
 			
       -- Si no hemos encontrado Key añadimos al principio
-      if not Found then
- 			if M.P_First= null then 
-  			   M.P_First:= Neu; 
-  			   M.P_Last:= Neu;    			   
+      if not Found  and M.Length < Max_length then
+ 			P_Aux:= Neu;
+         if M.P_First= null then 
+  			   M.P_First:= P_Aux; 
+  			   M.P_Last:= P_Aux;    			   
 			else 
-				Neu.Next:= M.P_First; 
-  				M.P_First.Prev:= Neu; 
-  			   M.P_First:= Neu; 
+  				M.P_First.Prev:= P_Aux; 
+  			   P_Aux.Next:= M.P_First;
+            M.P_First:= P_Aux; 
 			end if;
 			M.Length := M.Length + 1;
          Success:= True;       
-		else
-			Success:= False;
       end if;
    end Put;
 
    procedure Delete (M      : in out Map;
                      Key     : in  Key_Type;
                      Success : out Boolean) is
-      P_Current  : Cell_A;
-      P_Previous : Cell_A;
+      P_Aux: Cell_A;
    begin
       Success := False;
-      P_Previous := null;
-      P_Current  := M.P_First;
-      while not Success and P_Current /= null  loop
-         if P_Current.Key = Key then
-            Success := True;
-            M.Length := M.Length - 1;
-            if P_Previous /= null then
-               P_Previous.Next := P_Current.Next;
-            end if;
-            if M.P_First = P_Current then
-               M.P_First := M.P_First.Next;
-            end if;
-            Free (P_Current);
+      P_Aux  := M.P_First;
+      if M.Length=1 then
+         M.P_First:=null;
+         M.P_Last:= M.P_First;
+         Success:=True;
+      elsif P_Aux.Key=Key then
+         M.P_First:=M.P_First.Next;
+         M.P_First.Prev:=null;
+         Success:=True;
+      else
+         P_Aux:=P_Aux.Next;
+         while P_Aux/= null and then P_Aux.Key/=Key  loop
+            P_Aux:=P_Aux.Next;
+         end loop;
+         if P_Aux=M.P_Last then
+            M.P_Last:=P_Aux.Prev;
+            M.P_Last.Next:=null;
          else
-            P_Previous := P_Current;
-            P_Current := P_Current.Next;
+            P_Aux.Prev.Next:=P_Aux.Next;
+            P_Aux.Next.Prev:=P_Aux.Prev;
          end if;
-      end loop;
-
+         Success:=True;
+      end if;
+      if Success then
+         Free(P_Aux);
+         M.Length:=M.Length-1;
+      end if;
    end Delete;
  
 	function Get_Keys (M : Map) return Keys_Array_Type is
@@ -109,7 +110,7 @@ package body Maps_G is
 		Key_Array: Keys_Array_Type;
 	begin
 		P_Aux:=M.P_First;
-		while i<Max_length and P_Aux /= null loop 
+		while P_Aux /= null loop 
 			Key_Array(i):=P_Aux.Key;
 			P_Aux:=P_Aux.Next;			
 			i:=i+1;
@@ -124,8 +125,8 @@ package body Maps_G is
 	begin
 		while P_Aux /= null loop
 			Value_Array(i):=P_Aux.Value;
-			i:=i+1;
 			P_Aux:=P_Aux.Next;
+         i:=i+1;
 		end loop;
 		return Value_Array;
 	end;

@@ -3,28 +3,15 @@
 --TECNOLOGIAS
 --
 
-with Ada.Command_Line;
-with Ada.Text_IO;
-with Ada.Exceptions;
-with Debug;
-with Pantalla;
-with Zeug;
-with Insta;
-with Messages;
-with M_Debug;
-
 package body Chat_Handler is
-
-	use type CM.Message_Type;  
-	use type Seq_N_T.Seq_N_Type;
 
 	procedure EP_Handler (From    : in     LLU.End_Point_Type;
 						To      : in     LLU.End_Point_Type;
 						P_Buffer: access LLU.Buffer_Type) is
 		Bett: CM.Message_Type;
 		EP_H_Creat: LLU.End_Point_Type;
-		Seq_N: Seq_N_T.Seq_N_Type;
-		Seq: Seq_N_T.Seq_N_Type;
+		Seq_N: CM.Seq_N_T;
+		Seq: CM.Seq_N_T;
 		EP_H_Rsnd: LLU.End_Point_Type;
 		EP_R_Creat: LLU.End_Point_Type;
 		Nick: ASU.Unbounded_String;
@@ -41,14 +28,15 @@ package body Chat_Handler is
 		empty: Boolean;
 		Value : CM.Destinations_T;
 		Mess : CM.Mess_Id_T;
+		Send: Boolean:= False;
 
 	begin
-		Debug.Set_Status(Purge);
+		Debug.Set_Status(Zeug.Purge);
 		Zeug.Hafen(EP_H);
 		Bett:=CM.Message_Type'Input(P_Buffer);
 		if Bett=CM.Init then
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
-			Seq_N:=Seq_N_T.Seq_N_Type'Input(P_Buffer);
+			Seq_N:=CM.Seq_N_T'Input(P_Buffer);
 			EP_H_Rsnd:=LLU.End_Point_Type'Input(P_Buffer);
 			EP_R_Creat:=LLU.End_Point_Type'Input(P_Buffer);
 			Nick:=ASU.Unbounded_String'Input(P_Buffer);	
@@ -76,7 +64,7 @@ package body Chat_Handler is
 			
 		elsif Bett=CM.Confirm then
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
-			Seq_N:=Seq_N_T.Seq_N_Type'Input(P_Buffer);
+			Seq_N:=CM.Seq_N_T'Input(P_Buffer);
 			EP_H_Rsnd:=LLU.End_Point_Type'Input(P_Buffer);
 			Nick:=ASU.Unbounded_String'Input(P_Buffer);
 			LLU.Reset(P_Buffer.all);
@@ -94,26 +82,16 @@ package body Chat_Handler is
 			end if;
 		elsif Bett=CM.Writer then
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
-			Seq_N:=Seq_N_T.Seq_N_Type'Input(P_Buffer);
+			Seq_N:=CM.Seq_N_T'Input(P_Buffer);
 			EP_H_Rsnd:=LLU.End_Point_Type'Input(P_Buffer);
 			Nick:=ASU.Unbounded_String'Input(P_Buffer);
 			Text:= ASU.Unbounded_String'Input(P_Buffer);
+			Messages.Management(Bett, EP_H_Creat, Seq_N, EP_H_Rsnd, Nick, Text);
+
 			LLU.Reset(P_Buffer.all);
-			Insta.Latest_Msgs.Get(Insta.M_Map, EP_H_Creat, Seq, Success);
-			if not success or Seq_N=Seq+1 then --PRESENTE PROCESAMIENTO ESPECIFICO
-				M_Debug.Receive (Bett, EP_H_Creat, Seq_N, EP_H_Rsnd, Nick);
-				Ada.Text_IO.Put_Line(ASU.To_String(Nick) & ": " & ASU.To_String(Text));
-				M_Debug.New_Message (EP_H_Creat, Seq_N);
-				Messages.Send_Writer(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Text);
-				Messages.Send_Ack(Zeug.EP_H, EP_H_Creat, Seq_N, EP_H_Rsnd);
-			elsif Seq_N <= Seq then --PASADO SOLO ACK
-				Messages.Send_Ack(Zeug.EP_H, EP_H_Creat, Seq_N, EP_H_Rsnd);
-			elsif Seq_N >= Seq+2 then --FUTURO SOLO REENVIAR
-				Messages.Send_Writer(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Text);
-			end if;
 		elsif Bett=CM.Logout then
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
-			Seq_N:=Seq_N_T.Seq_N_Type'Input(P_Buffer);
+			Seq_N:=CM.Seq_N_T'Input(P_Buffer);
 			EP_H_Rsnd:=LLU.End_Point_Type'Input(P_Buffer);
 			Nick:=ASU.Unbounded_String'Input(P_Buffer);
 			Confirm_Sent:= Boolean'Input(P_Buffer);
@@ -154,7 +132,7 @@ package body Chat_Handler is
 		elsif Bett=CM.Ack then
 			EP_H_Acker:=LLU.End_Point_Type'Input(P_Buffer);
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
-			Seq_N:=Seq_N_T.Seq_N_Type'Input(P_Buffer);
+			Seq_N:=CM.Seq_N_T'Input(P_Buffer);
 			LLU.Reset(P_Buffer.all);
 			Mess := (EP_H_Creat, Seq_N);
 			Insta.Sender_Dests.Get(Insta.D_Map, Mess, Value, Success);
@@ -162,10 +140,10 @@ package body Chat_Handler is
 				empty := True;
 				for i in 1..10 loop
 					if Value(i).EP = EP_H_ACKer then
-						Value(i).EP := CM.Null_EP;
+						Value(i).EP := Retrans.Null_EP;
 						Value(i).Retries := 0;
 						Insta.Sender_Dests.Put(Insta.D_Map, Mess, Value);
-					elsif Value(i).EP /= CM.Null_EP and Value(i).Retries < 10 then
+					elsif Value(i).EP /= Retrans.Null_EP and Value(i).Retries < 10 then
 						empty := False;
 					end if;
 				end loop;
@@ -174,7 +152,7 @@ package body Chat_Handler is
 				end if;
 			end if;
 		end if;
-		if prompt then
+		if Zeug.prompt then
 			Ada.Text_IO.Put(ASU.To_String(Zeug.Nick) & " >> ");
 		end if;
 	end EP_Handler;

@@ -17,13 +17,13 @@ package body M_Debug is
 		Insta.Neighbors.Put(Insta.N_Map, EP, Zeit, Success);
 	end New_Neighbour;
 	
-	procedure New_Message (EP: LLU.End_Point_Type; Seq_N: Seq_N_T.Seq_N_Type) is
+	procedure New_Message (EP: LLU.End_Point_Type; Seqi: CM.Seq_N_T) is
 		Neighbour	  : ASU.Unbounded_String;
 		Success		  : Boolean;
 	begin
 		Zeug.Schneiden(EP, Neighbour);
-		Debug.Put_Line("Añadimos a latest_messages " & ASU.To_String(Neighbour) & Seq_N_T.Seq_N_Type'Image(Seq_N));
-		Insta.Latest_Msgs.Put(Insta.M_Map, EP, Seq_N, Success);
+		Debug.Put_Line("Añadimos a latest_messages " & ASU.To_String(Neighbour) & CM.Seq_N_T'Image(Seqi));
+		Insta.Latest_Msgs.Put(Insta.M_Map, EP, Seqi, Success);
 	end New_Message;
 
 	procedure Send (EP: LLU.End_Point_Type) is
@@ -51,7 +51,7 @@ package body M_Debug is
 		Insta.Latest_Msgs.Delete(Insta.M_Map, EP_H_Creat, Success);
 	end Delete_Message;
 
-	procedure Receive (Bett: CM.Message_Type; EP_H_Creat:LLU.End_Point_Type; Seq_N: Seq_N_T.Seq_N_Type; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String) is
+	procedure Receive (Bett: CM.Message_Type; EP_H_Creat:LLU.End_Point_Type; Seq_N: CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String) is
 		EPHCreat: ASU.Unbounded_String;
 		EPHRsnd: ASU.Unbounded_String;
 	begin
@@ -68,7 +68,7 @@ package body M_Debug is
 		elsif Bett=CM.Ack then		
 			Debug.Put("RCV Ack ", Pantalla.Amarillo);
 		end if;
-		Debug.Put_Line(ASU.To_String(EPHCreat) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N) & " " & ASU.To_String(EPHRsnd) & " " & ASU.To_String(Nick));
+		Debug.Put_Line(ASU.To_String(EPHCreat) & " " & CM.Seq_N_T'Image(Seq_N) & " " & ASU.To_String(EPHRsnd) & " " & ASU.To_String(Nick));
 	end Receive;
 
 	procedure Send_Reject (EP_H: LLU.End_Point_Type; Nick: ASU.Unbounded_String) is

@@ -13,7 +13,6 @@ with Debug;
 with Pantalla;
 with Chat_Messages;
 with Zeug;
-with Seq_N_T;
 with Ada.Calendar;
 with Insta;
 with Messages;
@@ -25,7 +24,7 @@ procedure Chat_Peer is
 	package LLU renames Lower_Layer_UDP;
 	use type LLU.End_Point_Type;
 	package ASU renames Ada.Strings.Unbounded;
-	use type Seq_N_T.Seq_N_Type;
+	use type CM.Seq_N_T;
 	package Handlers renames Chat_Handler;
 
 	Usage_Error : exception;
@@ -34,7 +33,7 @@ procedure Chat_Peer is
 	IP : ASU.Unbounded_String;
 	EP_H : LLU.End_Point_Type;
 	EP_R : LLU.End_Point_Type;
-	Seq_N : Seq_N_T.Seq_N_Type:=1;
+	Seq_N : CM.Seq_N_T:=1;
 	Nb1Host : ASU.Unbounded_String;
 	Nb1Port : ASU.Unbounded_String;
 	Nb1IP : ASU.Unbounded_String;
@@ -109,7 +108,7 @@ procedure Chat_Peer is
 	begin
 		loop
 			Debug.Set_Status(True);
-			if Handlers.prompt then
+			if Zeug.prompt then
 				Ada.Text_IO.Put(ASU.To_String(Nick) & " >> ");
 			end if;
 			Text:= ASU.To_Unbounded_String(Ada.Text_IO.Get_Line);
@@ -119,15 +118,17 @@ procedure Chat_Peer is
 				elsif ASU.To_String(Text)=".lm" or ASU.To_String(Text)=".latest_msgs" then
 					L_Messages;
 				elsif ASU.To_String(Text)=".debug" then
-					Zeug.Information(Handlers.Purge);
+					Zeug.Information(Zeug.Purge);
 				elsif ASU.To_String(Text)=".wai" or ASU.To_String(Text)=".whoami" then
 					Nickname;
 				elsif ASU.To_String(Text)=".prompt" then
-					Zeug.Name(Handlers.Prompt);
+					Zeug.Name(Zeug.Prompt);
 				elsif ASU.To_String(Text)=".h" or ASU.To_String(Text)=".help" then
 					Help;
 				else
-					Messages.Send_Writer(EP_H, Seq_N, EP_H, Zeug.Nick, Text);
+					Seq_N:=Seq_N+1;
+					M_Debug.New_Message(Zeug.EP_H, Seq_N);
+					Messages.Send_Writer(Zeug.EP_H, Seq_N, EP_H, Zeug.Nick, Text);
 				end if;
 			end if;
 		exit when ASU.To_String(Text)=".salir";
@@ -136,7 +137,7 @@ procedure Chat_Peer is
 
 --CUERPO DEL PROGRAMA PRINCIPAL
 begin
-	Debug.Set_Status(Handlers.Purge);
+	Debug.Set_Status(Zeug.Purge);
 	Argument:= Ada.Command_Line.Argument_Count;
 	if (Argument /= 5 and Argument /= 7 and Argument /= 9) then
 		raise Usage_Error;   
@@ -155,8 +156,8 @@ begin
 	LLU.Bind(EP_H, Handlers.EP_Handler'Access);
 	LLU.Bind_Any (EP_R);
 	--Para la simulacion de perdidas de paquetes
-	--LLU.Set_Faults_Percent(Zeug.Fault_Pct);
-	--LLU.Set_Random_Propagation_Delay(Zeug.Min_Delay, Zeug.Max_Delay);
+	--Set_Faults_Percent(Zeug.Fault_Pct)
+	--Set_Random_Propagation_Delay(Zeug.Min_Delay, Zeug.Max_Delay)
 		
 	if Argument = 5 then
 		Debug.Put_Line("NO hacemos protocolo de admisión pues no tenemos contactos iniciales ...");
@@ -188,7 +189,7 @@ begin
 		M_Debug.New_Message(EP_H, Seq_N);
 		Debug.Put("FLOOD Init ", Pantalla.Amarillo);
 		Zeug.Schneiden(EP_H, MyEP);
-		Debug.Put_Line(ASU.TO_String(MyEP) & " " & ASU.To_String(MyEP) & " " & Seq_N_T.Seq_N_Type'Image(Seq_N));
+		Debug.Put_Line(ASU.TO_String(MyEP) & " " & ASU.To_String(MyEP) & " " & CM.Seq_N_T'Image(Seq_N));
 		Messages.Send_Init(EP_H, Seq_N, EP_H, EP_R, Zeug.Nick);
 		Ada.Text_IO.Put_Line(" ");
 		Messages.Receive_Reject(EP_R, acept);
