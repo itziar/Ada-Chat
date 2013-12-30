@@ -14,7 +14,7 @@ with Ordered_Maps_G;
 with Ordered_Maps_Protector_G;
 with Gnat.Calendar.Time_IO;
 with Ada.Strings.Fixed;
-with Retrans;
+
 
 package Insta is
 
@@ -52,11 +52,11 @@ package Insta is
 
 	package NP_Sender_Dests is new Ordered_Maps_G (Key_Type => CM.Mess_Id_T,
 														Value_Type		  => CM.Destinations_T,
-														"="				  => Retrans.Mess_Iguales,
-														"<" 				  => Retrans.Mess_Menor,
-														">"  				  => Retrans.Mess_Mayor,
-														Key_To_String	  => Retrans.Image_Mess,
-														Value_To_String  => Retrans.Image_Destinations);
+														"="				  => Zeug.Mess_Iguales,
+														"<" 				  => Zeug.Mess_Menor,
+														">"  				  => Zeug.Mess_Mayor,
+														Key_To_String	  => Zeug.Image_Mess,
+														Value_To_String  => Zeug.Image_Destinations);
 	package Sender_Dests is new Ordered_Maps_Protector_G (NP_Sender_Dests);
 
 	package NP_Sender_Buffering is new Ordered_Maps_G (Key_Type => Ada.Calendar.Time,
@@ -64,8 +64,8 @@ package Insta is
 														"="				   => Ada.Calendar."=",
 														"<" 				   => Ada.Calendar."<",
 														">"  				   =>	Ada.Calendar.">",
-														Key_To_String	   => Retrans.Image_Time,
-														Value_To_String   => Retrans.Image_Value);	
+														Key_To_String	   => Zeug.Image_Time,
+														Value_To_String   => Zeug.Image_Value);	
 	package Sender_Buffering is new Ordered_Maps_Protector_G (NP_Sender_Buffering);
 
 	N_Map : Neighbors.Prot_Map;  

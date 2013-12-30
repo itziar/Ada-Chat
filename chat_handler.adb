@@ -140,10 +140,10 @@ package body Chat_Handler is
 				empty := True;
 				for i in 1..10 loop
 					if Value(i).EP = EP_H_ACKer then
-						Value(i).EP := Retrans.Null_EP;
+						Value(i).EP := Zeug.Null_EP;
 						Value(i).Retries := 0;
 						Insta.Sender_Dests.Put(Insta.D_Map, Mess, Value);
-					elsif Value(i).EP /= Retrans.Null_EP and Value(i).Retries < 10 then
+					elsif Value(i).EP /= Zeug.Null_EP and Value(i).Retries < 10 then
 						empty := False;
 					end if;
 				end loop;
