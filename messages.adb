@@ -20,7 +20,7 @@ package body Messages is
 		--Sender_Dests.Put(S_Dests, Mess, Value);
 		Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
 		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
-   			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
+			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
 				M_Debug.Send(Insta.EP_Arry(i));
 				--almacenar en sender_buffering
 				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);				
@@ -67,9 +67,7 @@ package body Messages is
 		ASU.Unbounded_String'Output(P_Buffer'Access, Nick);
 		LLU.Send(EP_R_Creat, P_Buffer'Access);
 	end Send_Reject;
-
 ---------------------------------------------------------------------------------------------------------------
-
 	--MENDAJE CONFIRM--
 	procedure Send_Confirm (EP_H_Creat: LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String) is
 		MyEP: ASU.Unbounded_String;
@@ -90,7 +88,7 @@ package body Messages is
 		--Sender_Dests.Put(S_Dests, Mess, Value);
 		Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
 		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
-   			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
+			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
 				M_Debug.Send(Insta.EP_Arry(i));
 				--almacenar en sender_buffering
 				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);			
@@ -101,9 +99,7 @@ package body Messages is
 			end if;
 		end loop;
 	end Send_Confirm;
----------------------------------------------------------------------------------------------------------------
-	
-	
+---------------------------------------------------------------------------------------------------------------	
    --MENSAJE WRITER--
 	procedure Send_Writer(EP_H_Creat: LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String; Text: ASU.Unbounded_String) is
 		MyEP: ASU.Unbounded_String;
@@ -123,7 +119,7 @@ package body Messages is
      	--Sender_Dests.Put(S_Dests, Mess, Value);
 		Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
 		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
-   			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
+			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
 				M_Debug.Send(Insta.EP_Arry(i));
 				--almacenar en sender_buffering
 				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);					
@@ -135,7 +131,6 @@ package body Messages is
 		end loop;		
 	end Send_Writer;
 ---------------------------------------------------------------------------------------------------------------
-
 	--MENSAJE LOGOUT--
 	procedure Send_Logout (EP_H_Creat: LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String; Confirm_Sent: in out Boolean) is
 		MyEP: ASU.Unbounded_String;
@@ -169,7 +164,6 @@ package body Messages is
 		LLU.Send(EP_Dest, Buffer'Access);
 	end Send_Ack;
 ---------------------------------------------------------------------------------------------------------------
-
 procedure Management (Bett: CM.Message_Type; EP_H_Creat: LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String; Text: ASU.Unbounded_String) is
 	Seq: CM.Seq_N_T;
 	Success: Boolean;

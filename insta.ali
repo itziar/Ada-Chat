@@ -2,20 +2,14 @@ V "GNAT Lib v4.6"
 P SS ZX
 R nnnvnnnvnvvnnnnnnnnnnnnnnnvnnvnvnnnnvvnnnvnnvnnnnnnnnnnnnnvnnnnvnnnnnnnnnnnnnv1+nn
 
-U insta%s		insta.ads		dc09bd62 EE OO PK
+U insta%s		insta.ads		061356a9 EE OO PK
 W ada%s			ada.ads			ada.ali
 W ada.calendar%s	a-calend.adb		a-calend.ali
-W ada.strings%s		a-string.ads		a-string.ali
-W ada.strings.fixed%s	a-strfix.adb		a-strfix.ali
-W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
 W ada.tags%s		a-tags.adb		a-tags.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
 W ada.unchecked_deallocation%s
 W chat_messages%s	chat_messages.ads	chat_messages.ali
 W debug%s		debug.adb		debug.ali
-W gnat%s		gnat.ads		gnat.ali
-W gnat.calendar%s	g-calend.adb		g-calend.ali
-W gnat.calendar.time_io%s  g-catiio.adb		g-catiio.ali
 W lower_layer_udp%s	lower_layer_udp.adb	lower_layer_udp.ali
 W maps_g%s		maps_g.adb		maps_g.ali  AD
 W maps_protector_g%s	maps_protector_g.adb	maps_protector_g.ali  AD
@@ -61,7 +55,7 @@ D debug.ads		20131119133210 410922c8
 D gnat.ads		20050905075125 fd2ad2f1
 D g-calend.ads		20100909103250 ed16288f
 D g-catiio.ads		20080820161238 b8a4f3d4
-D insta.ads		20131230093304 5e627e44
+D insta.ads		20131230095910 122dc8a4
 D interfac.ads		20090409150019 f77d8799
 D i-c.ads		20101007125900 809c38c4
 D i-cstrin.ads		20090417131547 f3023ec4
@@ -73,14 +67,14 @@ D lower_layer-inet.ads	20080723100827 1d47d264
 D lower_layer-inet-udp.ads  20080723100827 60f0483f
 D lower_layer-inet-udp-uni.ads  20080723100827 c94f5d30
 D lower_layer_udp.ads	20080723100827 ec2df04c
-D maps_g.ads		20131119133217 b8881b4e
-D maps_g.adb		20131229110034 135ed6af
-D maps_protector_g.ads	20131119133219 c05e88d5
-D maps_protector_g.adb	20131119133218 30a62c0c
-D ordered_maps_g.ads	20131224090251 d79544de
-D ordered_maps_g.adb	20131224090250 c72109f2
-D ordered_maps_protector_g.ads  20131224090253 040782e0
-D ordered_maps_protector_g.adb  20131224090252 638a1c40
+D maps_g.ads		20131230100411 b8881b4e
+D maps_g.adb		20131230100923 52697299
+D maps_protector_g.ads	20131230101525 c05e88d5
+D maps_protector_g.adb	20131230101232 30a62c0c
+D ordered_maps_g.ads	20131230102534 d79544de
+D ordered_maps_g.adb	20131230102422 c72109f2
+D ordered_maps_protector_g.ads  20131230102915 040782e0
+D ordered_maps_protector_g.adb  20131230102721 638a1c40
 D pantalla.ads		20131119133222 9c520c57
 D system.ads		20120503162406 2d1a1afa
 D s-atacco.ads		20090409150019 1dc856ad
@@ -118,96 +112,81 @@ D s-wchcon.ads		20090417130712 bfeb2e3d
 D unchdeal.ads		20070406091342 214516a4
 D zeug.ads		20131230093700 87e42bd4
 X 1 ada.ads
-16K9*Ada 19e8 30|9r6 10r6 16r6 21r29 27r18 30r13 34r127 62r72 64r151 65r151
-. 66r153
+16K9*Ada 19e8 30|6r6 17r18 26r127 54r72 56r151 57r151 58r153
 X 2 a-calend.ads
-36K13*Calendar 358e17 30|10w10 27r22 34r131 62r76 64r155 65r155 66r157
-38I9*Time 30|27r31 34r140 62r85
-103V13*"<"{boolean} 30|65r164
-105V13*">"{boolean} 30|66r166
-X 12 a-string.ads
-16K13*Strings 35e16 30|9r10 16r10 21r33 30r17
-X 13 a-strfix.ads
-18K21*Fixed 251e22 30|16w18 30r25
-X 15 a-strunb.ads
-39K21*Unbounded 437e26 30|9w18 21r41
-42R9*Unbounded_String 404e14 30|22r22 26r22
+36K13*Calendar 358e17 30|6w10 17r22 26r131 54r76 56r155 57r155 58r157
+38I9*Time 30|17r31 26r140 54r85
+103V13*"<"{boolean} 30|57r164
+105V13*">"{boolean} 30|58r166
 X 24 chat_messages.ads
-9K9*Chat_Messages 39e18 30|12w6 25r28
-13M23*Seq_N_T 30|29r21 44r130 50r136
-15E14*Message_Type 15e74 30|28r21
-17R14*Mess_Id_T 20e19 30|53r71
-27A14*Destinations_T(22R14)<integer> 30|54r145
-31R14*Value_T 35e19 30|63r146
-X 27 gnat.ads
-36K9*GNAT 39e9 30|15r6
-X 28 g-calend.ads
-45K14*Calendar 150e18 30|15r11
-X 29 g-catiio.ads
-37K23*Time_IO 156e26 30|15w20
+9K9*Chat_Messages 39e18 30|7w6 18r28
+13M23*Seq_N_T 30|20r21 36r130 42r136
+15E14*Message_Type 15e74 30|19r21
+17R14*Mess_Id_T 20e19 30|45r71
+27A14*Destinations_T(22R14)<integer> 30|46r145
+31R14*Value_T 35e19 30|55r146
 X 30 insta.ads
-19K9*Insta 77l5 77e10
-21K17*ASU=21:41 22r18 26r18
-23K17*LLU=23:29 33r57 38r127 43r61 48r127
-25K17*CM=25:28 28r18 29r18 44r127 50r133 53r68 54r142 63r143
-33K17*NP_Neighbors[42|16] 41r52
-41K17*Neighbors[44|5] 71r17 75r19
-43K17*NP_Latest_Msgs[42|16] 51r54
-51K17*Latest_Msgs[44|5] 72r17
-53K17*NP_Sender_Dests[46|14] 60r63
-60K17*Sender_Dests[48|5] 73r16
-62K17*NP_Sender_Buffering[46|14] 69r67
-69K17*Sender_Buffering[48|5] 74r16
-71w9*N_Map{44|7W9[41]}
-72w9*M_Map{44|7W9[51]}
-73w9*D_Map{48|7W9[60]}
-74w9*B_Map{48|7W9[69]}
-75a9*EP_Arry{44|24A12[41]}
+15K9*Insta 69l5 69e10
+18K17*CM=18:28 19r18 20r18 36r127 42r133 45r68 46r142 55r143
+21K17*LLU=21:29 25r57 30r127 35r61 40r127
+25K17*NP_Neighbors[42|16] 33r52
+33K17*Neighbors[44|5] 63r17 67r19
+35K17*NP_Latest_Msgs[42|16] 43r54
+43K17*Latest_Msgs[44|5] 64r17
+45K17*NP_Sender_Dests[46|16] 52r63
+52K17*Sender_Dests[48|5] 65r16
+54K17*NP_Sender_Buffering[46|16] 61r67
+61K17*Sender_Buffering[48|5] 66r16
+63w9*N_Map{44|7W14[33]}
+64w9*M_Map{44|7W14[43]}
+65w9*D_Map{48|7W14[52]}
+66w9*B_Map{48|7W14[61]}
+67a9*EP_Arry{44|23A17[33]}
 X 37 lower_layer.ads
 112P9*Address_CA(110R9)
 184V13*"="{boolean} 35|30i18
 186V13*">="{boolean} 35|29i18
 X 41 lower_layer_udp.ads
-4K9*Lower_Layer_UDP 30|6w6 23r29 24r13 41|150e20
-23P12*End_Point_Type{37|112P9} 30|33r61 43r65
-32V13*"="{boolean} 30|38r131 48r131
+4K9*Lower_Layer_UDP 30|8w6 21r29 22r13 41|150e20
+23P12*End_Point_Type{37|112P9} 30|25r61 35r65
+32V13*"="{boolean} 30|30r131 40r131
 X 42 maps_g.ads
-7+9 Key_Type 30|33r45 43r47
-8+14 Value_Type 30|34r113 44r113
-9*9 Null_Key{7+9} 30|35r113 45r113
-10*9 Null_Value{8+14} 30|36r113 46r113
-11i9 Max_Length{natural} 30|37r113 47r113
-12V23 "="{boolean} 30|38r113 48r113
-13V23 Key_To_String{string} 30|39r113 49r113
-14V23 Value_To_String{string} 30|40r113 50r113
-16k9*Maps_G 30|7w6 33r37 43r39 42|65e11
-35A9*Keys_Array_Type(37|112P9)<integer>
+7+14 Key_Type 30|25r45 35r47
+8+14 Value_Type 30|26r113 36r113
+9*9 Null_Key{7+14} 30|27r113 37r113
+10*9 Null_Value{8+14} 30|28r113 38r113
+11i9 Max_Length{natural} 30|29r113 39r113
+12V23 "="{boolean} 30|30r113 40r113
+13V23 Key_To_String{string} 30|31r113 41r113
+14V23 Value_To_String{string} 30|32r113 42r113
+16k9*Maps_G 30|9w6 25r37 35r39 42|65e11
+35A14*Keys_Array_Type(37|112P9)<integer>
 X 44 maps_protector_g.ads
-5k9*Maps_Protector_G 30|8w6 41r34 51r36 44|64e21
-7W9*Prot_Map 30|71r27[41] 72r29[51]
-24A12*Keys_Array_Type{42|35A9[30|33]}<integer> 30|75r29[41]
+5k9*Maps_Protector_G 30|10w6 33r34 43r36 44|62e21
+7W14*Prot_Map 30|63r27[33] 64r29[43]
+23A17*Keys_Array_Type{42|35A14[30|25]}<integer> 30|67r29[33]
 X 46 ordered_maps_g.ads
-7+9 Key_Type 30|53r56 62r60
-8+9 Value_Type 30|54r113 63r113
-9V18 "="{boolean} 30|55r113 64r113
-10V18 "<"{boolean} 30|56r113 65r113
-11V18 ">"{boolean} 30|57r113 66r113
-12V18 Key_To_String{string} 30|58r113 67r113
-13V18 Value_To_String{string} 30|59r113 68r113
-14k9*Ordered_Maps_G 30|13w6 53r40 62r44 46|49e19
+8+14 Key_Type 30|45r56 54r60
+9+14 Value_Type 30|46r113 55r113
+10V23 "="{boolean} 30|47r113 56r113
+11V23 "<"{boolean} 30|48r113 57r113
+12V23 ">"{boolean} 30|49r113 58r113
+13V23 Key_To_String{string} 30|50r113 59r113
+14V23 Value_To_String{string} 30|51r113 60r113
+16k9*Ordered_Maps_G 30|11w6 45r40 54r44 46|48e19
 X 48 ordered_maps_protector_g.ads
-5k9*Ordered_Maps_Protector_G 30|14w6 60r37 69r41 48|50e29
-7W9*Prot_Map 30|73r29[60] 74r33[69]
+5k9*Ordered_Maps_Protector_G 30|12w6 52r37 61r41 48|49e29
+7W14*Prot_Map 30|65r29[52] 66r33[61]
 X 85 zeug.ads
-36K9*Zeug 30|11w6 39r131 40r133 49r131 55r150 56r150 57r150 58r134 59r133
-. 67r135 68r134 85|90e9
-56V13*SchneidenString{string} 30|39r136 49r136
-57V13*Time_Image_One{string} 30|40r138
-75V13*Image_Time{string} 30|67r140
-79V18*Mess_Iguales{boolean} 30|55r155
-81V18*Mess_Menor{boolean} 30|56r155
-83V18*Mess_Mayor{boolean} 30|57r155
-85V18*Image_Mess{string} 30|58r139
-87V18*Image_Destinations{string} 30|59r138
-89V18*Image_Value{string} 30|68r139
+36K9*Zeug 30|13w6 31r131 32r133 41r131 47r150 48r150 49r150 50r134 51r133
+. 59r135 60r134 85|90e9
+56V13*SchneidenString{string} 30|31r136 41r136
+57V13*Time_Image_One{string} 30|32r138
+75V13*Image_Time{string} 30|59r140
+79V18*Mess_Iguales{boolean} 30|47r155
+81V18*Mess_Menor{boolean} 30|48r155
+83V18*Mess_Mayor{boolean} 30|49r155
+85V18*Image_Mess{string} 30|50r139
+87V18*Image_Destinations{string} 30|51r138
+89V18*Image_Value{string} 30|60r139
 

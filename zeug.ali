@@ -86,10 +86,10 @@ D lower_layer-inet.ads	20080723100827 1d47d264
 D lower_layer-inet-udp.ads  20080723100827 60f0483f
 D lower_layer-inet-udp-uni.ads  20080723100827 c94f5d30
 D lower_layer_udp.ads	20080723100827 ec2df04c
-D maps_g.ads		20131119133217 b8881b4e
-D maps_protector_g.ads	20131119133219 c05e88d5
-D ordered_maps_g.ads	20131224090251 d79544de
-D ordered_maps_protector_g.ads  20131224090253 040782e0
+D maps_g.ads		20131230100411 b8881b4e
+D maps_protector_g.ads	20131230101525 c05e88d5
+D ordered_maps_g.ads	20131230102534 d79544de
+D ordered_maps_protector_g.ads  20131230102915 040782e0
 D pantalla.ads		20131119133222 9c520c57
 D system.ads		20120503162406 2d1a1afa
 D s-atacco.ads		20090409150019 1dc856ad
@@ -205,11 +205,11 @@ X 39 lower_layer_udp.ads
 X 40 maps_g.ads
 16k9*Maps_G 65e11 82|27w6
 X 41 maps_protector_g.ads
-5k9*Maps_Protector_G 64e21 82|28w6
+5k9*Maps_Protector_G 62e21 82|28w6
 X 42 ordered_maps_g.ads
-14k9*Ordered_Maps_G 49e19 82|31w6
+16k9*Ordered_Maps_G 48e19 82|31w6
 X 43 ordered_maps_protector_g.ads
-5k9*Ordered_Maps_Protector_G 50e29 82|32w6
+5k9*Ordered_Maps_Protector_G 49e29 82|32w6
 X 44 pantalla.ads
 11K9*Pantalla 39e13 82|19w6 83|71r65 74r62 82r65 86r62
 16n28*Rojo{16E9} 83|71r74 74r71 82r74 86r71

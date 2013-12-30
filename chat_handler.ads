@@ -34,9 +34,9 @@ package Chat_Handler is
 
 	
 	-- This procedure must NOT be called. It's called from LLU
-	procedure EP_Handler (From     : in     LLU.End_Point_Type;
-													To       : in     LLU.End_Point_Type;
-													P_Buffer : access LLU.Buffer_Type);
+	procedure EP_Handler (From : in LLU.End_Point_Type;
+						To : in LLU.End_Point_Type;
+						P_Buffer : access LLU.Buffer_Type);
 
 
 end Chat_Handler;

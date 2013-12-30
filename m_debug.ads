@@ -3,29 +3,25 @@
 --TECNOLOGIAS
 --
 
-with Lower_Layer_UDP;
-with Ada.Command_Line;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO;
-with Ada.Exceptions;
-with Debug;
-with Pantalla;
-with Chat_Messages;
-with Zeug;
 with Ada.Calendar;
+with Chat_Messages;
+with Debug;
 with Insta;
-with Maps_G;
-with Maps_Protector_G;
-
-
+with Lower_Layer_UDP;
+with Pantalla;
+with Zeug;
 
 package M_Debug is
+
+	package ASU renames Ada.Strings.Unbounded;
 	package CM renames Chat_Messages;
 	use type CM.Message_Type;
-   package LLU renames Lower_Layer_UDP;
-   use type LLU.End_Point_Type;
-   package ASU renames Ada.Strings.Unbounded;
 	use type CM.Seq_N_T;
+	package LLU renames Lower_Layer_UDP;
+	use type LLU.End_Point_Type;
+	
 
 	procedure Send (EP: LLU.End_Point_Type);
 	procedure New_Neighbour(EP: LLU.End_Point_Type);

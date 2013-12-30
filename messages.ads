@@ -3,29 +3,25 @@
 --TECNOLOGIAS
 --
 
-with Lower_Layer_UDP;
-with Ada.Command_Line;
+with Ada.Calendar;
 with Ada.Strings.Unbounded;
 with Ada.Text_IO;
-with Ada.Exceptions;
-with Debug;
-with Pantalla;
 with Chat_Messages;
-with Zeug;
-with Ada.Calendar;
+with Debug;
 with Insta;
-with Maps_G;
-with Maps_Protector_G;
+with Lower_Layer_UDP;
 with M_Debug;
-
+with Pantalla;
+with Zeug;
 
 package Messages is
+	
+	package ASU renames Ada.Strings.Unbounded;
 	package CM renames Chat_Messages;
 	use type CM.Message_Type;
+	use type CM.Seq_N_T;
 	package LLU renames Lower_Layer_UDP;
 	use type LLU.End_Point_Type;
-	package ASU renames Ada.Strings.Unbounded;
-	use type CM.Seq_N_T;
 
 	--MENSAJE INIT--
 	procedure Send_Init (EP_H_Creat: in LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: in LLU.End_Point_Type; EP_R_Creat: in LLU.End_Point_Type; nick: in out ASU.Unbounded_String);

@@ -2,7 +2,7 @@ V "GNAT Lib v4.6"
 P SS ZX
 R nnnnnnnvnvnnnnnnnnnnnnnnnvnnnnnnnnvnnnnnnvnnvnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnn
 
-U m_debug%b		m_debug.adb		fb78ce4e NE OO PK
+U m_debug%b		m_debug.adb		2ba38afb NE OO PK
 W ada.tags%s		a-tags.adb		a-tags.ali
 W system.concat_2%s	s-conca2.adb		s-conca2.ali
 W system.concat_3%s	s-conca3.adb		s-conca3.ali
@@ -16,11 +16,9 @@ W system.soft_links%s	s-soflin.adb		s-soflin.ali
 W system.standard_library%s  s-stalib.adb	s-stalib.ali
 W system.unsigned_types%s  s-unstyp.ads		s-unstyp.ali
 
-U m_debug%s		m_debug.ads		16852b5a EE NE OO PK
+U m_debug%s		m_debug.ads		1e1a9af8 EE NE OO PK
 W ada%s			ada.ads			ada.ali
 W ada.calendar%s	a-calend.adb		a-calend.ali
-W ada.command_line%s	a-comlin.adb		a-comlin.ali
-W ada.exceptions%s	a-except.adb		a-except.ali
 W ada.strings%s		a-string.ads		a-string.ali
 W ada.strings.unbounded%s  a-strunb.adb		a-strunb.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
@@ -28,8 +26,6 @@ W chat_messages%s	chat_messages.ads	chat_messages.ali
 W debug%s		debug.adb		debug.ali
 W insta%s		insta.ads		insta.ali
 W lower_layer_udp%s	lower_layer_udp.adb	lower_layer_udp.ali
-W maps_g%s		maps_g.adb		maps_g.ali
-W maps_protector_g%s	maps_protector_g.adb	maps_protector_g.ali
 W pantalla%s		pantalla.adb		pantalla.ali
 W zeug%s		zeug.adb		zeug.ali
 
@@ -61,7 +57,7 @@ D debug.ads		20131119133210 410922c8
 D gnat.ads		20050905075125 fd2ad2f1
 D g-calend.ads		20100909103250 ed16288f
 D g-catiio.ads		20080820161238 b8a4f3d4
-D insta.ads		20131230093304 5e627e44
+D insta.ads		20131230095910 122dc8a4
 D interfac.ads		20090409150019 f77d8799
 D i-c.ads		20101007125900 809c38c4
 D i-cstrin.ads		20090417131547 f3023ec4
@@ -73,12 +69,12 @@ D lower_layer-inet.ads	20080723100827 1d47d264
 D lower_layer-inet-udp.ads  20080723100827 60f0483f
 D lower_layer-inet-udp-uni.ads  20080723100827 c94f5d30
 D lower_layer_udp.ads	20080723100827 ec2df04c
-D m_debug.ads		20131229153552 782d9c9b
-D m_debug.adb		20131229153801 835552d5
-D maps_g.ads		20131119133217 b8881b4e
-D maps_protector_g.ads	20131119133219 c05e88d5
-D ordered_maps_g.ads	20131224090251 d79544de
-D ordered_maps_protector_g.ads  20131224090253 040782e0
+D m_debug.ads		20131230100230 a8f6d82e
+D m_debug.adb		20131230100045 835552d5
+D maps_g.ads		20131230100411 b8881b4e
+D maps_protector_g.ads	20131230101525 c05e88d5
+D ordered_maps_g.ads	20131230102534 d79544de
+D ordered_maps_protector_g.ads  20131230102915 040782e0
 D pantalla.ads		20131119133222 9c520c57
 D system.ads		20120503162406 2d1a1afa
 D s-atacco.ads		20090409150019 1dc856ad
@@ -117,83 +113,79 @@ D s-wchcon.ads		20090417130712 bfeb2e3d
 D unchdeal.ads		20070406091342 214516a4
 D zeug.ads		20131230093700 87e42bd4
 X 1 ada.ads
-16K9*Ada 19e8 41|7r6 8r6 9r6 10r6 15r6 27r24 42|10r45 15r17 16r24
+16K9*Ada 19e8 41|6r6 7r6 8r6 18r29 42|10r24 15r17 16r24
 X 2 a-calend.ads
-36K13*Calendar 358e17 41|15w10 42|10r49 16r28
-38I9*Time 42|10r58
+36K13*Calendar 358e17 41|8w10 42|10r28 16r28
+38I9*Time 42|10r37
 52V13*Clock{38I9} 42|16s37
-X 5 a-comlin.ads
-38K13*Command_Line 139e21 41|7w10
-X 6 a-except.ads
-55K13*Exceptions 370e19 41|10w10
 X 12 a-string.ads
-16K13*Strings 35e16 41|8r10 27r28
+16K13*Strings 35e16 41|6r10 18r33
 X 15 a-strunb.ads
-39K21*Unbounded 437e26 41|8w18 27r36
-42R9*Unbounded_String 404e14 41|33r142 36r68 42|9r41 21r41 30r41 37r31 46r31
-. 54r142 55r31 56r30 74r68 75r27
+39K21*Unbounded 437e26 41|6w18 18r41
+42R9*Unbounded_String 404e14 41|29r142 32r68 42|9r33 21r33 30r33 37r32 46r32
+. 54r142 55r32 56r31 74r68 75r28
 63V13*To_String{string} 42|14s63 25s69 33s56 41s67 50s69 71s36 71s100 71s131
 . 79s36 79s64
 X 18 a-textio.ads
-49K13*Text_IO 472e16 41|9w10 42|15r21
+49K13*Text_IO 472e16 41|7w10 42|15r21
 264U14*Put_Line 42|15s29
 X 23 chat_messages.ads
-9K9*Chat_Messages 39e18 41|13w6 23r28
-13M23*Seq_N_T 41|28r21 32r65 33r92 42|20r65 25r95 54r92 71r67
-15E14*Message_Type 15e74 41|24r21 33r37 42|54r37
+9K9*Chat_Messages 39e18 41|9w6 19r28
+13M23*Seq_N_T 41|21r21 28r65 29r92 42|20r65 25r95 54r92 71r67
+15E14*Message_Type 15e74 41|20r21 29r37 42|54r37
 15n31*Init{15E14} 42|60r28
 15n45*Confirm{15E14} 42|62r31
 15n54*Writer{15E14} 42|64r31
 15n62*Logout{15E14} 42|66r31
 15n70*Ack{15E14} 42|68r31
 X 25 debug.ads
-3K9*Debug 24e10 41|11w6 42|14r17 25r17 33r17 41r17 50r17 61r25 63r25 65r25
+3K9*Debug 24e10 41|10w6 42|14r17 25r17 33r17 41r17 50r17 61r25 63r25 65r25
 . 67r25 69r25 71r17 78r17 79r17
 14U14*Put_Line 42|14s23 25s23 33s23 41s23 50s23 71s23 79s23
 20U14*Put 42|61s31 63s31 65s31 67s31 69s31 78s23
 X 29 insta.ads
-19K9*Insta 77e10 41|16w6 42|17r17 17r37 26r17 26r39 42r17 42r40 51r17 51r42
-41K17*Neighbors[44|5] 42|17r23 42r23
-51K17*Latest_Msgs[44|5] 42|26r23 51r23
-71w9*N_Map{44|7W9[41]} 42|17m43 42m46
-72w9*M_Map{44|7W9[51]} 42|26m45 51m48
+15K9*Insta 69e10 41|11w6 42|17r17 17r37 26r17 26r39 42r17 42r40 51r17 51r42
+33K17*Neighbors[44|5] 42|17r23 42r23
+43K17*Latest_Msgs[44|5] 42|26r23 51r23
+63w9*N_Map{44|7W14[33]} 42|17m43 42m46
+64w9*M_Map{44|7W14[43]} 42|26m45 51m48
 X 36 lower_layer.ads
 112P9*Address_CA(110R9)
 184V13*"="{boolean} 34|30i18
 186V13*">="{boolean} 34|29i18
 X 40 lower_layer_udp.ads
-4K9*Lower_Layer_UDP 150e20 41|6w6 25r24
-23P12*End_Point_Type{36|112P9} 41|26r17 30r33 31r41 32r40 33r66 33r116 34r50
-. 35r52 36r42 42|8r41 20r40 29r33 36r52 45r50 54r66 54r116 74r42
+4K9*Lower_Layer_UDP 150e20 41|12w6 22r29
+23P12*End_Point_Type{36|112P9} 41|23r22 26r33 27r41 28r40 29r66 29r116 30r50
+. 31r52 32r42 42|8r41 20r40 29r33 36r52 45r50 54r66 54r116 74r42
 X 41 m_debug.ads
-22K9*M_Debug 38l5 38e12 42|6b14 82l5 82t12
-23K17*CM=23:28 24r18 28r18 32r62 33r34 33r89 42|20r62 25r92 54r34 54r89 60r25
-. 62r28 64r28 66r28 68r28 71r64
-25K12*LLU=25:24 26r13 30r29 31r37 32r36 33r62 33r112 34r46 35r48 36r38 42|8r37
-. 20r36 29r29 36r48 45r46 54r62 54r112 74r38
-27K12*ASU=27:36 33r138 36r64 42|9r37 14r59 21r37 25r65 30r37 33r52 37r27
-. 41r63 46r27 50r65 54r138 55r27 56r26 71r32 71r96 71r127 74r64 75r23 79r32
+16K9*M_Debug 34l5 34e12 42|6b14 82l5 82t12
+18K17*ASU=18:41 29r138 32r64 42|9r29 14r59 21r29 25r65 30r29 33r52 37r28
+. 41r63 46r28 50r65 54r138 55r28 56r27 71r32 71r96 71r127 74r64 75r24 79r32
 . 79r60
-30U19*Send 30>25 42|29b19 34l13 34t17
-30p25 EP{40|23P12} 42|29b25 32r32
-31U19*New_Neighbour 31>33 42|8b19 18l13 18t26
-31p33 EP{40|23P12} 42|8b33 13r32 17r50
-32U19*New_Message 32>32 32>56 42|20b19 27l13 27t24
-32p32 EP{40|23P12} 42|20b32 24r32 26r52
-32m56 Seqi{23|13M23} 42|20b56 25r109 26r56
-33U19*Receive 33>28 33>51 33>82 33>101 33>132 42|54b19 72l13 72t20
-33e28 Bett{23|15E14} 42|54b28 60r20 62r23 64r23 66r23 68r23
-33p51 EP_H_Creat{40|23P12} 42|54b51 58r32
-33m82 Seq_N{23|13M23} 42|54b82 71r81
-33p101 EP_H_Rsnd{40|23P12} 42|54b101 59r32
-33r132 Nick{15|42R9} 42|54b132 71r141
-34U19*Delete_Message 34>34 42|45b19 52l13 52t27
-34p34 EP_H_Creat{40|23P12} 42|45b34 49r32 51r55
-35U19*Delete_Neighbors 35>36 42|36b19 43l13 43t29
-35p36 EP_H_Creat{40|23P12} 42|36b36 40r32 42r53
-36U19*Send_Reject 36>32 36>58 42|74b19 80l13 80t24
-36p32 EP_H{40|23P12} 42|74b32 77r32
-36r58 Nick{15|42R9} 42|74b58 79r74
+19K17*CM=19:28 20r18 21r18 28r62 29r34 29r89 42|20r62 25r92 54r34 54r89 60r25
+. 62r28 64r28 66r28 68r28 71r64
+22K17*LLU=22:29 23r18 26r29 27r37 28r36 29r62 29r112 30r46 31r48 32r38 42|8r37
+. 20r36 29r29 36r48 45r46 54r62 54r112 74r38
+26U19*Send 26>25 42|29b19 34l13 34t17
+26p25 EP{40|23P12} 42|29b25 32r32
+27U19*New_Neighbour 27>33 42|8b19 18l13 18t26
+27p33 EP{40|23P12} 42|8b33 13r32 17r50
+28U19*New_Message 28>32 28>56 42|20b19 27l13 27t24
+28p32 EP{40|23P12} 42|20b32 24r32 26r52
+28m56 Seqi{23|13M23} 42|20b56 25r109 26r56
+29U19*Receive 29>28 29>51 29>82 29>101 29>132 42|54b19 72l13 72t20
+29e28 Bett{23|15E14} 42|54b28 60r20 62r23 64r23 66r23 68r23
+29p51 EP_H_Creat{40|23P12} 42|54b51 58r32
+29m82 Seq_N{23|13M23} 42|54b82 71r81
+29p101 EP_H_Rsnd{40|23P12} 42|54b101 59r32
+29r132 Nick{15|42R9} 42|54b132 71r141
+30U19*Delete_Message 30>34 42|45b19 52l13 52t27
+30p34 EP_H_Creat{40|23P12} 42|45b34 49r32 51r55
+31U19*Delete_Neighbors 31>36 42|36b19 43l13 43t29
+31p36 EP_H_Creat{40|23P12} 42|36b36 40r32 42r53
+32U19*Send_Reject 32>32 32>58 42|74b19 80l13 80t24
+32p32 EP_H{40|23P12} 42|74b32 77r32
+32r58 Nick{15|42R9} 42|74b58 79r74
 X 42 m_debug.adb
 9r17 Neighbour{15|42R9} 13m36 14r73
 10i17 Zeit{2|38I9} 16m17 17r54
@@ -208,15 +200,12 @@ X 42 m_debug.adb
 55r17 EPHCreat{15|42R9} 58m44 71r46
 56r17 EPHRsnd{15|42R9} 59m43 71r110
 75r17 MyEP{15|42R9} 77m38 79r46
-X 43 maps_g.ads
-16k9*Maps_G 41|17w6 43|65e11
 X 44 maps_protector_g.ads
-5k9*Maps_Protector_G 41|18w6 44|64e21
-7W9*Prot_Map
-15U14*Put 42|17s33[29|41] 26s35[29|51]
-20U14*Delete 42|42s33[29|41] 51s35[29|51]
+7W14*Prot_Map
+14U19*Put 42|17s33[29|33] 26s35[29|43]
+19U19*Delete 42|42s33[29|33] 51s35[29|43]
 X 47 pantalla.ads
-11K9*Pantalla 41|12w6 42|61r48 63r51 65r50 67r50 69r47 78r43 47|39e13
+11K9*Pantalla 41|13w6 42|61r48 63r51 65r50 67r50 69r47 78r43 47|39e13
 16n34*Amarillo{16E9} 42|61r57 63r60 65r59 67r59 69r56 78r52
 X 83 zeug.ads
 36K9*Zeug 41|14w6 42|13r17 24r17 32r17 40r17 49r17 58r17 59r17 77r17 83|90e9
