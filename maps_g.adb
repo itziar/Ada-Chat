@@ -17,9 +17,9 @@ package body Maps_G is
 	procedure Free is new Ada.Unchecked_Deallocation (Cell, Cell_A);
 
 	procedure Get (M : Map;
-						Key : in  Key_Type;
-						Value : out Value_Type;
-						Success : out Boolean) is
+				Key : in  Key_Type;
+				Value : out Value_Type;
+				Success : out Boolean) is
 		P_Aux : Cell_A;
 	begin
 		P_Aux := M.P_First;
@@ -34,9 +34,9 @@ package body Maps_G is
 	end Get;
 
 	procedure Put (M : in out Map;
-						Key : Key_Type;
-						Value : Value_Type;
-						Success : out Boolean) is
+				Key : Key_Type;
+				Value : Value_Type;
+				Success : out Boolean) is
 		P_Aux : Cell_A;
 		Found : Boolean := False;
 		Neu : Cell_A := new Cell'(Key, Value, null, null);
@@ -68,8 +68,8 @@ package body Maps_G is
 	end Put;
 
 	procedure Delete (M : in out Map;
-							Key : in  Key_Type;
-							Success : out Boolean) is
+					Key : in  Key_Type;
+					Success : out Boolean) is
 		P_Aux : Cell_A;
 	begin
 		Success := False;
@@ -121,6 +121,7 @@ package body Maps_G is
 	i : integer:= 1;
 	Value_Array : Values_Array_Type;
 	begin
+		P_Aux:=M.P_First;
 		while P_Aux /= null loop
 			Value_Array(i):=P_Aux.Value;
 			P_Aux:=P_Aux.Next;

@@ -13,15 +13,20 @@ with Lower_Layer_UDP;
 with M_Debug;
 with Pantalla;
 with Zeug;
+with Timed_Handlers;
+with Retrans;
+with Lower_Layer;
 
 package Messages is
-	
+	use type Lower_Layer.Address_CA;
+--	use Lower_Layer_UDP;
 	package ASU renames Ada.Strings.Unbounded;
 	package CM renames Chat_Messages;
 	use type CM.Message_Type;
 	use type CM.Seq_N_T;
 	package LLU renames Lower_Layer_UDP;
 	use type LLU.End_Point_Type;
+	use type Ada.Calendar.Time;
 
 	--MENSAJE INIT--
 	procedure Send_Init (EP_H_Creat: in LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: in LLU.End_Point_Type; EP_R_Creat: in LLU.End_Point_Type; nick: in out ASU.Unbounded_String);

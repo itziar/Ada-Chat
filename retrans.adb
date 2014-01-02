@@ -13,16 +13,24 @@ package body Retrans is
 		Success: Boolean;
 		New_Timer: Ada.Calendar.Time;
 		find: Boolean:= False;
+		--Bett: CM.Message_Type;
 	begin
 		Insta.Sender_Buffering.Get(Insta.B_Map, Timer, ValB, Success);
 		Mess := (ValB.EP_H_Creat, ValB.Seq_N);
 		Insta.Sender_Dests.Get(Insta.D_Map, Mess, ValD, Success);
+		Ada.Text_IO.Put_Line(Boolean'Image(Success));
+		Ada.Text_IO.Put_Line(CM.Seq_N_T'Image(ValB.Seq_N));
+		Ada.Text_IO.Put_Line(LLU.Image(ValB.EP_H_Creat));
 		if Success then
 			for i in 1..10 loop
 				if ValD(i).EP/=Zeug.Null_EP and ValD(i).Retries <10 then
 					LLU.Send(ValD(i).EP,ValB.P_Buffer);
-					New_Timer:= Ada.Calendar.Clock+2*Duration(Zeug.Max_Delay)/1000;
+					Ada.Text_IO.Put_Line("Reenvio"& Zeug.SchneidenString(ValD(i).EP));
 					Insta.Sender_Buffering.Delete(Insta.B_Map, Timer, Success);
+					New_Timer:= Ada.Calendar.Clock+2*Duration(Zeug.Max_Delay)/1000;
+					Ada.Text_IO.Put_Line(Zeug.Image_Time(New_Timer));
+					Insta.Sender_Buffering.Put(Insta.B_Map,New_Timer,ValB);
+
 					Timed_Handlers.Set_Timed_Handler(New_Timer, Relay'Access);
 					ValD(i).Retries:=ValD(i).Retries+1;
 					find:=True;

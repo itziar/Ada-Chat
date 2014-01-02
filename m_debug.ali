@@ -16,7 +16,7 @@ W system.soft_links%s	s-soflin.adb		s-soflin.ali
 W system.standard_library%s  s-stalib.adb	s-stalib.ali
 W system.unsigned_types%s  s-unstyp.ads		s-unstyp.ali
 
-U m_debug%s		m_debug.ads		1e1a9af8 EE NE OO PK
+U m_debug%s		m_debug.ads		cb112cad EE NE OO PK
 W ada%s			ada.ads			ada.ali
 W ada.calendar%s	a-calend.adb		a-calend.ali
 W ada.strings%s		a-string.ads		a-string.ali
@@ -51,13 +51,13 @@ D a-unccon.ads		20070406091342 f9eb8f06
 D ada_sockets.ads	20080723100827 372c9145
 D c_sockets.ads		20120529214139 44862f45
 D c_sockets_arch.ads	20120529194800 c328cf60
-D chat_messages.ads	20131229154008 e08f93ed
+D chat_messages.ads	20140102121916 a9ff0fc0
 D concurrency.ads	20081111152635 d11dedce
-D debug.ads		20131119133210 410922c8
+D debug.ads		20131230104523 410922c8
 D gnat.ads		20050905075125 fd2ad2f1
 D g-calend.ads		20100909103250 ed16288f
 D g-catiio.ads		20080820161238 b8a4f3d4
-D insta.ads		20131230095910 122dc8a4
+D insta.ads		20131230105138 122dc8a4
 D interfac.ads		20090409150019 f77d8799
 D i-c.ads		20101007125900 809c38c4
 D i-cstrin.ads		20090417131547 f3023ec4
@@ -75,7 +75,7 @@ D maps_g.ads		20131230100411 b8881b4e
 D maps_protector_g.ads	20131230101525 c05e88d5
 D ordered_maps_g.ads	20131230102534 d79544de
 D ordered_maps_protector_g.ads  20131230102915 040782e0
-D pantalla.ads		20131119133222 9c520c57
+D pantalla.ads		20131230104054 9c520c57
 D system.ads		20120503162406 2d1a1afa
 D s-atacco.ads		20090409150019 1dc856ad
 D s-conca2.ads		20090420091404 fbd0f2fc
@@ -111,7 +111,7 @@ D s-unstyp.ads		20090409150019 6ae15c76
 D s-valint.ads		20090409150019 48a52a3f
 D s-wchcon.ads		20090417130712 bfeb2e3d
 D unchdeal.ads		20070406091342 214516a4
-D zeug.ads		20131230093700 87e42bd4
+D zeug.ads		20131230104427 1b9f01ac
 X 1 ada.ads
 16K9*Ada 19e8 41|6r6 7r6 8r6 18r29 42|10r24 15r17 16r24
 X 2 a-calend.ads
@@ -141,8 +141,8 @@ X 23 chat_messages.ads
 X 25 debug.ads
 3K9*Debug 24e10 41|10w6 42|14r17 25r17 33r17 41r17 50r17 61r25 63r25 65r25
 . 67r25 69r25 71r17 78r17 79r17
-14U14*Put_Line 42|14s23 25s23 33s23 41s23 50s23 71s23 79s23
-20U14*Put 42|61s31 63s31 65s31 67s31 69s31 78s23
+14U20*Put_Line 42|14s23 25s23 33s23 41s23 50s23 71s23 79s23
+20U20*Put 42|61s31 63s31 65s31 67s31 69s31 78s23
 X 29 insta.ads
 15K9*Insta 69e10 41|11w6 42|17r17 17r37 26r17 26r39 42r17 42r40 51r17 51r42
 33K17*Neighbors[44|5] 42|17r23 42r23
@@ -206,8 +206,8 @@ X 44 maps_protector_g.ads
 19U19*Delete 42|42s33[29|33] 51s35[29|43]
 X 47 pantalla.ads
 11K9*Pantalla 41|13w6 42|61r48 63r51 65r50 67r50 69r47 78r43 47|39e13
-16n34*Amarillo{16E9} 42|61r57 63r60 65r59 67r59 69r56 78r52
+16n40*Amarillo{16E15} 42|61r57 63r60 65r59 67r59 69r56 78r52
 X 83 zeug.ads
-36K9*Zeug 41|14w6 42|13r17 24r17 32r17 40r17 49r17 58r17 59r17 77r17 83|90e9
-53U19*Schneiden 42|13s22 24s22 32s22 40s22 49s22 58s22 59s22 77s22
+22K9*Zeug 41|14w6 42|13r17 24r17 32r17 40r17 49r17 58r17 59r17 77r17 83|74e9
+37U19*Schneiden 42|13s22 24s22 32s22 40s22 49s22 58s22 59s22 77s22
 

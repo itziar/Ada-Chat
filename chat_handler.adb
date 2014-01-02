@@ -68,7 +68,7 @@ package body Chat_Handler is
 			EP_H_Rsnd:=LLU.End_Point_Type'Input(P_Buffer);
 			Nick:=ASU.Unbounded_String'Input(P_Buffer);
 			LLU.Reset(P_Buffer.all);
-			M_Debug.Receive (Bett, EP_H_Creat, Seq_N, EP_H_Rsnd, Nick);
+			M_Debug.Receive(Bett, EP_H_Creat, Seq_N, EP_H_Rsnd, Nick);
 			Insta.Latest_Msgs.Get(Insta.M_Map, EP_H_Creat, Seq, Success);
 			if not success or Seq_N=Seq+1 then --PRESENTE PROCESAMIENTO ESPECIFICO
 				Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha entrado en el chat");
@@ -134,6 +134,7 @@ package body Chat_Handler is
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
 			Seq_N:=CM.Seq_N_T'Input(P_Buffer);
 			LLU.Reset(P_Buffer.all);
+			Ada.Text_IO.Put_Line("Recibido ACK"&CM.Seq_N_T'Image(Seq_N));
 			Mess := (EP_H_Creat, Seq_N);
 			Insta.Sender_Dests.Get(Insta.D_Map, Mess, Value, Success);
 			if Success then

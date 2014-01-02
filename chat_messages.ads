@@ -34,6 +34,6 @@ package Chat_Messages is
 		P_Buffer: Buffer_A_T;
 	end record;
 
-	P_Buffer_MH :Buffer_A_T;
+	P_Buffer :Buffer_A_T;
 
 end Chat_Messages;

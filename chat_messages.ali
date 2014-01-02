@@ -2,7 +2,7 @@ V "GNAT Lib v4.6"
 P SS ZX
 R nnnnnnnnnnnnnnnnnnnnnnnnnnnnnvnnnnnnnnnnnnnnvnnnnnnnnnnnnnvnnnnnnnnnnnnnnnnnnnnn
 
-U chat_messages%s	chat_messages.ads	0ca263a1 NE OO PK
+U chat_messages%s	chat_messages.ads	45d2ff8c NE OO PK
 W ada.tags%s		a-tags.adb		a-tags.ali
 W lower_layer_udp%s	lower_layer_udp.adb	lower_layer_udp.ali
 
@@ -18,7 +18,7 @@ D a-unccon.ads		20070406091342 f9eb8f06
 D ada_sockets.ads	20080723100827 372c9145
 D c_sockets.ads		20120529214139 44862f45
 D c_sockets_arch.ads	20120529194800 c328cf60
-D chat_messages.ads	20131229154008 e08f93ed
+D chat_messages.ads	20140102121916 a9ff0fc0
 D concurrency.ads	20081111152635 d11dedce
 D interfac.ads		20090409150019 f77d8799
 D i-c.ads		20101007125900 809c38c4
@@ -75,12 +75,12 @@ X 13 chat_messages.ads
 23p17*Ep{24|23P12}
 24i17*Retries{natural}
 27A14*Destinations_T(22R14)<integer>
-29P14*Buffer_A_T(24|8R12) 34r27 37r22
+29P14*Buffer_A_T(24|8R12) 34r27 37r19
 31R14*Value_T 35e19
 32p17*EP_H_Creat{24|23P12}
 33m17*Seq_N{13M23}
 34p17*P_Buffer{29P14}
-37p9*P_Buffer_MH{29P14}
+37p9*P_Buffer{29P14}
 X 20 lower_layer.ads
 112P9*Address_CA(110R9)
 184V13*"="{boolean} 18|30i18

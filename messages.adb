@@ -7,29 +7,36 @@
 package body Messages is
 
 	procedure Send_Init (EP_H_Creat: in LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: in LLU.End_Point_Type; EP_R_Creat: in LLU.End_Point_Type; nick: in out ASU.Unbounded_String) is
+		Time_Rtx : Ada.Calendar.Time;
+		Mess : CM.Mess_Id_T;
+		ValD: CM.Destinations_T;
+		ValB: CM.Value_T;
 	begin
-		CM.P_Buffer_MH:=new llu.buffer_type(1024);
-		CM.Message_Type'Output (CM.P_Buffer_MH, CM.Init);
-		LLU.End_Point_Type'Output (CM.P_Buffer_MH, EP_H_Creat);
-		CM.Seq_N_T'Output(CM.P_Buffer_MH, Seq_N);
-		LLU.End_Point_Type'Output (CM.P_Buffer_MH, EP_H_Rsnd);
-		LLU.End_Point_Type'Output (CM.P_Buffer_MH, EP_R_Creat);
-		ASU.Unbounded_String'Output(CM.P_Buffer_MH, Nick);
+		CM.P_Buffer:=new LLU.Buffer_Type(1024);
+		CM.Message_Type'Output (CM.P_Buffer, CM.Init);
+		LLU.End_Point_Type'Output (CM.P_Buffer, EP_H_Creat);
+		CM.Seq_N_T'Output(CM.P_Buffer, Seq_N);
+		LLU.End_Point_Type'Output (CM.P_Buffer, EP_H_Rsnd);
+		LLU.End_Point_Type'Output (CM.P_Buffer, EP_R_Creat);
+		ASU.Unbounded_String'Output(CM.P_Buffer, Nick);
 		Debug.Set_Status(Zeug.Purge);
 		--Almacenar en sender_dests
-		--Sender_Dests.Put(S_Dests, Mess, Value);
+		Mess := (EP_H_Creat, Seq_N);
 		Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
 		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
 			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
-				M_Debug.Send(Insta.EP_Arry(i));
-				--almacenar en sender_buffering
-				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);				
-				LLU.Send(Insta.EP_Arry(i), CM.P_Buffer_MH);
+				M_Debug.Send(Insta.EP_Arry(i));				
+				LLU.Send(Insta.EP_Arry(i), CM.P_Buffer);
 				--Programar Retransmision
-				--Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
-				--Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);				
+				ValD(i) := (Insta.EP_Arry(i), 0);
+				ValB := (EP_H_Creat, Seq_N, CM.P_Buffer);
+				Time_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				--almacenar en sender_buffering
+				Insta.Sender_Buffering.Put(Insta.B_Map, Time_Rtx, ValB);
+				Timed_Handlers.Set_Timed_Handler(Time_Rtx, Retrans.Relay'Access);	
 			end if;
 		end loop;		
+		Insta.Sender_Dests.Put(Insta.D_Map, Mess, ValD);
 	end Send_Init; 
 ---------------------------------------------------------------------------------------------------------------	
 --MENSAJE REJECT--
@@ -71,86 +78,115 @@ package body Messages is
 	--MENDAJE CONFIRM--
 	procedure Send_Confirm (EP_H_Creat: LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String) is
 		MyEP: ASU.Unbounded_String;
+		Time_Rtx : Ada.Calendar.Time;
+		Mess : CM.Mess_Id_T;
+		ValD: CM.Destinations_T;
+		ValB: CM.Value_T;
 	begin
-		CM.P_Buffer_MH:=new llu.buffer_type(1024);
-		Seq_N:=Seq_N+1;
-		CM.Message_Type'Output(CM.P_Buffer_MH, CM.Confirm);
-		LLU.End_Point_Type'Output(CM.P_Buffer_MH, EP_H_Creat);
-		CM.Seq_N_T'Output(CM.P_Buffer_MH, Seq_N); --Change to type Seq_N_T
-		LLU.End_Point_Type'Output(CM.P_Buffer_MH, EP_H_Rsnd);
-		ASU.Unbounded_String'Output(CM.P_Buffer_MH, Nick);
+		CM.P_Buffer:=new LLU.Buffer_Type(1024);
+		CM.Message_Type'Output(CM.P_Buffer, CM.Confirm);
+		LLU.End_Point_Type'Output(CM.P_Buffer, EP_H_Creat);
+		CM.Seq_N_T'Output(CM.P_Buffer, Seq_N); 
+		LLU.End_Point_Type'Output(CM.P_Buffer, EP_H_Rsnd);
+		ASU.Unbounded_String'Output(CM.P_Buffer, Nick);
 		Debug.Set_Status(Zeug.Purge);
 		Debug.Put("FLOOD Confirm ", Pantalla.Amarillo);
 		Zeug.Schneiden(EP_H_Creat, MyEP);
 		Debug.Put_Line(ASU.To_String(MyEP) & " " & CM.Seq_N_T'Image(Seq_N) & " " & ASU.To_String(MyEP) & " " & ASU.To_String(Nick));
-		--send all neighbors
 		--Almacenar en sender_dests
-		--Sender_Dests.Put(S_Dests, Mess, Value);
+		Mess := (EP_H_Creat, Seq_N);
 		Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
 		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
 			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
-				M_Debug.Send(Insta.EP_Arry(i));
-				--almacenar en sender_buffering
-				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);			
-				LLU.Send(Insta.EP_Arry(i), CM.P_Buffer_MH);
+				M_Debug.Send(Insta.EP_Arry(i));				
+				LLU.Send(Insta.EP_Arry(i), CM.P_Buffer);
 				--Programar Retransmision
-				--Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
-				--Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);
+				ValD(i) := (Insta.EP_Arry(i), 0);
+				ValB := (EP_H_Creat, Seq_N, CM.P_Buffer);
+				Time_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				--almacenar en sender_buffering
+				Insta.Sender_Buffering.Put(Insta.B_Map, Time_Rtx, ValB);
+				Timed_Handlers.Set_Timed_Handler(Time_Rtx, Retrans.Relay'Access);
 			end if;
 		end loop;
+		Insta.Sender_Dests.Put(Insta.D_Map, Mess, ValD);
 	end Send_Confirm;
 ---------------------------------------------------------------------------------------------------------------	
    --MENSAJE WRITER--
 	procedure Send_Writer(EP_H_Creat: LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String; Text: ASU.Unbounded_String) is
 		MyEP: ASU.Unbounded_String;
+		Time_Rtx : Ada.Calendar.Time;
+		Mess : CM.Mess_Id_T;
+		ValD: CM.Destinations_T;
+		ValB: CM.Value_T;
 	begin
-		CM.P_Buffer_MH:=new llu.buffer_type(1024);	
-		CM.Message_Type'Output(CM.P_Buffer_MH, CM.Writer);
-		LLU.End_Point_Type'Output(CM.P_Buffer_MH, EP_H_Creat);
-		CM.Seq_N_T'Output(CM.P_Buffer_MH, Seq_N); 
-		LLU.End_Point_Type'Output(CM.P_Buffer_MH, EP_H_Rsnd);
-		ASU.Unbounded_String'Output(CM.P_Buffer_MH, Nick);
-		ASU.Unbounded_String'Output(CM.P_Buffer_MH, Text);
+		CM.P_Buffer:=new LLU.Buffer_Type(1024);	
+		CM.Message_Type'Output(CM.P_Buffer, CM.Writer);
+		LLU.End_Point_Type'Output(CM.P_Buffer, EP_H_Creat);
+		CM.Seq_N_T'Output(CM.P_Buffer, Seq_N); 
+		LLU.End_Point_Type'Output(CM.P_Buffer, EP_H_Rsnd);
+		ASU.Unbounded_String'Output(CM.P_Buffer, Nick);
+		ASU.Unbounded_String'Output(CM.P_Buffer, Text);
 		Zeug.Schneiden (EP_H_Creat, MyEP);
 		Debug.Set_Status(Zeug.Purge);
 		Debug.Put("FLOOD Writer ", Pantalla.Amarillo);
 		Debug.Put_Line(ASU.To_String(MyEP) & " " & CM.Seq_N_T'Image(Seq_N) &" " & ASU.To_String(MyEP) & " " & ASU.To_String(Nick) & " " & ASU.To_String(Text));        			
 		--Almacenar en sender_dests
-     	--Sender_Dests.Put(S_Dests, Mess, Value);
+		Mess := (EP_H_Creat, Seq_N);
 		Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
 		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
 			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
-				M_Debug.Send(Insta.EP_Arry(i));
-				--almacenar en sender_buffering
-				--Sender_Buffering.Put(S_Buffer, Hora_Rtx, Value_1);					
-				LLU.Send(Insta.EP_Arry(i), CM.P_Buffer_MH);
+				M_Debug.Send(Insta.EP_Arry(i));				
+				LLU.Send(Insta.EP_Arry(i), CM.P_Buffer);
 				--Programar Retransmision
-				--Hora_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
-				--Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Reenvio_Paquete'Access);
-			end if;	
-		end loop;		
+				ValD(i) := (Insta.EP_Arry(i), 0);
+				ValB := (EP_H_Creat, Seq_N, CM.P_Buffer);
+				Time_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				--almacenar en sender_buffering
+				Insta.Sender_Buffering.Put(Insta.B_Map, Time_Rtx, ValB);
+				Timed_Handlers.Set_Timed_Handler(Time_Rtx, Retrans.Relay'Access);
+			end if;
+		end loop;	
+				Insta.Sender_Dests.Put(Insta.D_Map, Mess, ValD);
+	
 	end Send_Writer;
 ---------------------------------------------------------------------------------------------------------------
 	--MENSAJE LOGOUT--
 	procedure Send_Logout (EP_H_Creat: LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String; Confirm_Sent: in out Boolean) is
 		MyEP: ASU.Unbounded_String;
 		Neighbour	  : ASU.Unbounded_String;
+		Time_Rtx : Ada.Calendar.Time;
+		Mess : CM.Mess_Id_T;
+		ValD: CM.Destinations_T;
+		ValB: CM.Value_T;
 	begin
-		CM.P_Buffer_MH:=new llu.buffer_type(1024);	
-		Seq_N:= Seq_N+1;
-		CM.Message_Type'Output(CM.P_Buffer_MH, CM.Logout);
-		LLU.End_Point_Type'Output(CM.P_Buffer_MH, EP_H_Creat);
-		CM.Seq_N_T'Output(CM.P_Buffer_MH, Seq_N);
-		LLU.End_Point_Type'Output(CM.P_Buffer_MH, EP_H_Rsnd);
-		ASU.Unbounded_String'Output(CM.P_Buffer_MH, Nick);
-		Boolean'Output(CM.P_Buffer_MH, Confirm_Sent);
+		CM.P_Buffer:=new LLU.Buffer_Type(1024);	
+		CM.Message_Type'Output(CM.P_Buffer, CM.Logout);
+		LLU.End_Point_Type'Output(CM.P_Buffer, EP_H_Creat);
+		CM.Seq_N_T'Output(CM.P_Buffer, Seq_N);
+		LLU.End_Point_Type'Output(CM.P_Buffer, EP_H_Rsnd);
+		ASU.Unbounded_String'Output(CM.P_Buffer, Nick);
+		Boolean'Output(CM.P_Buffer, Confirm_Sent);
 		Debug.Set_Status(Zeug.Purge);
 		Debug.Put("FLOOD Logout ", Pantalla.Amarillo);
 		Zeug.Schneiden(EP_H_Creat, MyEP);
 		Debug.Put_Line(ASU.To_String(MyEP) & " " & CM.Seq_N_T'Image(Seq_N) & " " & ASU.To_String(MyEP) & " " & ASU.To_String(Nick) & " " & Boolean'Image(Confirm_Sent));
-		--Almacenar en sender_dests
-		--Sender_Dests.Put(S_Dests, Mess, Value);
-		
+		Mess := (EP_H_Creat, Seq_N);
+		Insta.Sender_Dests.Put(Insta.D_Map, Mess, ValD);
+		Insta.EP_Arry:=Insta.Neighbors.Get_Keys(Insta.N_Map);
+		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
+			if Insta.EP_Arry(i) /= EP_H_Creat and Insta.EP_Arry(i) /= EP_H_Rsnd then
+				M_Debug.Send(Insta.EP_Arry(i));				
+				LLU.Send(Insta.EP_Arry(i), CM.P_Buffer);
+				--Programar Retransmision
+				ValD(i) := (Insta.EP_Arry(i), 0);
+				ValB := (EP_H_Creat, Seq_N, CM.P_Buffer);
+				Time_Rtx := Ada.Calendar.Clock + 2*Duration(Zeug.Max_Delay)/1000;
+				--almacenar en sender_buffering
+				Insta.Sender_Buffering.Put(Insta.B_Map, Time_Rtx, ValB);
+				Timed_Handlers.Set_Timed_Handler(Time_Rtx, Retrans.Relay'Access);				
+			end if;
+		end loop;		
 	end Send_Logout;
 ---------------------------------------------------------------------------------------------------------------			
 	procedure Send_Ack(EP_H_Acker: LLU.End_Point_Type; EP_H_Creat: LLU.End_Point_Type; Seq_N: CM.Seq_N_T; EP_Dest: LLU.End_Point_Type) is
