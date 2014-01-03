@@ -15,7 +15,6 @@ package body Chat_Handler is
 		EP_H_Rsnd: LLU.End_Point_Type;
 		EP_R_Creat: LLU.End_Point_Type;
 		Nick: ASU.Unbounded_String;
-		EP_H: LLU.End_Point_Type;
 		Text: ASU.Unbounded_String;
 		Confirm_Sent: Boolean;
 		Success : Boolean;
@@ -32,7 +31,6 @@ package body Chat_Handler is
 
 	begin
 		Debug.Set_Status(Zeug.Purge);
-		Zeug.Hafen(EP_H);
 		Bett:=CM.Message_Type'Input(P_Buffer);
 		if Bett=CM.Init then
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
@@ -53,12 +51,12 @@ package body Chat_Handler is
 				Insta.Latest_Msgs.Get(Insta.M_Map, EP_H_Creat, Seq, Success);
 				if not success or Seq_N=Seq+1 then --PRESENTE PROCESAMIENTO ESPECIFICO
 					M_Debug.New_Message (EP_H_Creat, Seq_N);
-					Messages.Send_Init(EP_H_Creat, Seq_N, Zeug.EP_H, EP_R_Creat, Nick);
+				--	Messages.Send_Init(EP_H_Creat, Seq_N, Zeug.EP_H, EP_R_Creat, Nick);
 					Messages.Send_Ack(Zeug.EP_H, EP_H_Creat, Seq_N, EP_H_Rsnd);
 				elsif Seq_N <= Seq then --PASADO SOLO ACK
 					Messages.Send_Ack(Zeug.EP_H, EP_H_Creat, Seq_N, EP_H_Rsnd);
-				elsif Seq_N >= Seq+2 then --FUTURO SOLO REENVIAR
-					Messages.Send_Init(EP_H_Creat, Seq_N, Zeug.EP_H, EP_R_Creat, Nick);
+				--elsif Seq_N >= Seq+2 then --FUTURO SOLO REENVIAR
+				--	Messages.Send_Init(EP_H_Creat, Seq_N, Zeug.EP_H, EP_R_Creat, Nick);
 				end if;
 			end if;
 			
@@ -73,12 +71,12 @@ package body Chat_Handler is
 			if not success or Seq_N=Seq+1 then --PRESENTE PROCESAMIENTO ESPECIFICO
 				Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha entrado en el chat");
 				M_Debug.New_Message (EP_H_Creat, Seq_N);
-				Messages.Send_Confirm(EP_H_Creat, Seq_N, Zeug.EP_H, Nick);
+				--Messages.Send_Confirm(EP_H_Creat, Seq_N, Zeug.EP_H, Nick);
 				Messages.Send_Ack(Zeug.EP_H, EP_H_Creat, Seq_N, EP_H_Rsnd);
 			elsif Seq_N <= Seq then --PASADO SOLO ACK
 				Messages.Send_Ack(Zeug.EP_H, EP_H_Creat, Seq_N, EP_H_Rsnd);
-			elsif Seq_N >= Seq+2 then --FUTURO SOLO REENVIAR
-				Messages.Send_Confirm(EP_H_Creat, Seq_N, Zeug.EP_H, Nick);
+			--elsif Seq_N >= Seq+2 then --FUTURO SOLO REENVIAR
+			--	Messages.Send_Confirm(EP_H_Creat, Seq_N, Zeug.EP_H, Nick);
 			end if;
 		elsif Bett=CM.Writer then
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
@@ -107,7 +105,7 @@ package body Chat_Handler is
 				M_Debug.Delete_Message(EP_H_Creat);
 				if Confirm_Sent then	
 					Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha salido del chat");
-					Messages.Send_Logout(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Confirm_Sent);			
+			--		Messages.Send_Logout(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Confirm_Sent);			
 				end if;
 			end if;
 			if not success or Seq_N=Seq+1 then --PRESENTE PROCESAMIENTO ESPECIFICO
@@ -117,17 +115,17 @@ package body Chat_Handler is
 				if Confirm_Sent then
 					Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha salido del chat");
 					M_Debug.New_Message (EP_H_Creat, Seq_N);
-					Messages.Send_Logout(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Confirm_Sent);			
+			--		Messages.Send_Logout(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Confirm_Sent);			
 				end if;
 				Messages.Send_Ack(Zeug.EP_H, EP_H_Creat, Seq_N, EP_H_Rsnd);
 			elsif Seq_N <= Seq then --PASADO SOLO ACK
 				Messages.Send_Ack(Zeug.EP_H, EP_H_Creat, Seq_N, EP_H_Rsnd);
 			elsif Seq_N >= Seq+2 then --FUTURO SOLO REENVIAR
-				if Confirm_Sent then
-					Messages.Send_Writer(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Text);
-				else
+			--	if Confirm_Sent then
+			--		Messages.Send_Writer(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Text);
+			--	else
 					Ada.Text_IO.Put_Line("MENSAJE DEL FUTURO NO LO ENVIO PORQUE NO DE NICK REPETIDO");
-				end if;
+			--	end if;
 			end if;
 		elsif Bett=CM.Ack then
 			EP_H_Acker:=LLU.End_Point_Type'Input(P_Buffer);

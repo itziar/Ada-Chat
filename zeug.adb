@@ -23,24 +23,11 @@ begin
 end Hafen;
 
 procedure schneiden (EP_N: in LLU.End_Point_Type; neighbour: out ASU.Unbounded_String) is
-	N, M, o: Natural;
-	ipg,portg: ASU.Unbounded_String;
-	s, r, t: ASU.Unbounded_String;
+
 begin
-	s:= ASU.To_Unbounded_String(LLU.Image(EP_N));
---	Ada.Text_IO.Put_Line(ASU.To_String(s));
-	N:=ASU.Index(s, ": ");
-	R:= ASU.Tail(s, ASU.Length(s)-N-1); 
-	--Ada.Text_IO.Put_Line(ASU.To_String(r));
-	M:=ASU.Index(r, ",");
-	ipg:= ASU.Head(r, M-1);
-	--Ada.Text_IO.Put_Line(ASU.To_String(ipg));
-	T:= ASU.Tail(r, ASU.Length(r)-M+1);
-	--Ada.Text_IO.Put_Line(ASU.To_String(t));
-	O:=ASU.Index(t, ": ");
-	portg:= ASU.Tail(t, ASU.Length(t)-O+1);
-	--Ada.Text_IO.Put_Line(ASU.To_String(portg));
-	Neighbour:= ASU.To_Unbounded_String(ASU.To_String(ipg) & ":" & ASU.To_String(portg));
+
+
+	Neighbour:= ASU.To_Unbounded_String(LLU.Image(EP_N));
 end schneiden;
 
 	function SchneidenString (EP_N: in LLU.End_Point_Type) return String is

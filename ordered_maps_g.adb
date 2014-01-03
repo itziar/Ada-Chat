@@ -1,3 +1,4 @@
+
 with Ada.Unchecked_Deallocation;
 with Ada.Text_IO;
 with Debug;
@@ -140,7 +141,9 @@ package body Ordered_Maps_G is
          if M.Left /= null then
             Print_Tree (M.Left);
          end if;
-         Debug.Put_Line("(" & Key_To_String(M.Key) & ", " & Value_To_String(M.Value) & ")", Pantalla.Rojo);
+         Debug.Put_Line ("(" &
+                         Key_To_String(M.Key) & ", " &
+                         Value_To_String(M.Value) & ")", Pantalla.Rojo);
          if M.Right /= null then
             Print_Tree (M.Right);
          end if;

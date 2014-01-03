@@ -2,13 +2,13 @@ V "GNAT Lib v4.6"
 P SS ZX
 R nnnvnnnvnvvnnnnnnnnnnnnnnnvnnvnvnnnnvvnnnvnnvnnnnnnnnnnnnnvnnnnvnnnnnnnnnnnnnv1+nn
 
-U insta%s		insta.ads		d318e0fc EE OO PK
+U insta%s		insta.ads		176dd063 EE OO PK
 W ada%s			ada.ads			ada.ali
 W ada.calendar%s	a-calend.adb		a-calend.ali
 W ada.tags%s		a-tags.adb		a-tags.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
 W ada.unchecked_deallocation%s
-W chat_messages%s	chat_messages.ads	chat_messages.ali
+W chat_messages%s	chat_messages.adb	chat_messages.ali
 W debug%s		debug.adb		debug.ali
 W lower_layer_udp%s	lower_layer_udp.adb	lower_layer_udp.ali
 W maps_g%s		maps_g.adb		maps_g.ali  AD
@@ -16,7 +16,7 @@ W maps_protector_g%s	maps_protector_g.adb	maps_protector_g.ali  AD
 W ordered_maps_g%s	ordered_maps_g.adb	ordered_maps_g.ali  AD
 W ordered_maps_protector_g%s  ordered_maps_protector_g.adb  ordered_maps_protector_g.ali  AD
 W pantalla%s		pantalla.adb		pantalla.ali
-W system.concat_3%s	s-conca3.adb		s-conca3.ali
+W system.concat_4%s	s-conca4.adb		s-conca4.ali
 W system.concat_5%s	s-conca5.adb		s-conca5.ali
 W system.img_uns%s	s-imguns.adb		s-imguns.ali
 W system.secondary_stack%s  s-secsta.adb	s-secsta.ali
@@ -41,6 +41,7 @@ D a-string.ads		20070406091342 90ac6797
 D a-strfix.ads		20101008130255 d07c346e
 D a-strmap.ads		20090409150019 9cb836fb
 D a-strunb.ads		20101008130255 fe8d9a91
+D a-suteio.ads		20090409150019 26d8e9aa
 D a-tags.ads		20101021101406 c7695348
 D a-taside.ads		20090409150019 a4888134
 D a-textio.ads		20091028140912 386df5d4
@@ -49,9 +50,9 @@ D a-uncdea.ads		20070406091342 f15a5ed1
 D ada_sockets.ads	20080723100827 372c9145
 D c_sockets.ads		20120529214139 44862f45
 D c_sockets_arch.ads	20120529194800 c328cf60
-D chat_messages.ads	20140102121916 a9ff0fc0
+D chat_messages.ads	20140103194849 6d8a3f5f
 D concurrency.ads	20081111152635 d11dedce
-D debug.ads		20131230104523 410922c8
+D debug.ads		20131119133210 410922c8
 D gnat.ads		20050905075125 fd2ad2f1
 D g-calend.ads		20100909103250 ed16288f
 D g-catiio.ads		20080820161238 b8a4f3d4
@@ -67,18 +68,18 @@ D lower_layer-inet.ads	20080723100827 1d47d264
 D lower_layer-inet-udp.ads  20080723100827 60f0483f
 D lower_layer-inet-udp-uni.ads  20080723100827 c94f5d30
 D lower_layer_udp.ads	20080723100827 ec2df04c
-D maps_g.ads		20131230100411 b8881b4e
-D maps_g.adb		20140102124714 903c6b7a
-D maps_protector_g.ads	20131230101525 c05e88d5
-D maps_protector_g.adb	20131230101232 30a62c0c
-D ordered_maps_g.ads	20131230102534 d79544de
-D ordered_maps_g.adb	20140102125502 a6d57c99
-D ordered_maps_protector_g.ads  20131230102915 040782e0
-D ordered_maps_protector_g.adb  20131230102721 638a1c40
-D pantalla.ads		20131230104054 9c520c57
+D maps_g.ads		20140103194931 b8881b4e
+D maps_g.adb		20140103194934 93b2f442
+D maps_protector_g.ads	20140103194951 c05e88d5
+D maps_protector_g.adb	20140103194929 30a62c0c
+D ordered_maps_g.ads	20121231094648 d79544de
+D ordered_maps_g.adb	20140103195016 a6d57c99
+D ordered_maps_protector_g.ads  20140103195116 040782e0
+D ordered_maps_protector_g.adb  20140103195117 638a1c40
+D pantalla.ads		20121124195702 9c520c57
 D system.ads		20120503162406 2d1a1afa
 D s-atacco.ads		20090409150019 1dc856ad
-D s-conca3.ads		20090420091404 762a026a
+D s-conca4.ads		20090420091404 025fe3be
 D s-conca5.ads		20090420091404 1039cea1
 D s-crtl.ads		20100617122610 ac77b159
 D s-exctab.ads		20090417131547 66e51330
@@ -110,83 +111,83 @@ D s-unstyp.ads		20090409150019 6ae15c76
 D s-valint.ads		20090409150019 48a52a3f
 D s-wchcon.ads		20090417130712 bfeb2e3d
 D unchdeal.ads		20070406091342 214516a4
-D zeug.ads		20131230104427 1b9f01ac
+D zeug.ads		20140103194239 1b9f01ac
 X 1 ada.ads
-16K9*Ada 19e8 30|6r6 17r18 26r100 54r76 56r136 57r128 58r132
+16K9*Ada 19e8 31|6r6 17r18 26r100 54r76 56r136 57r128 58r132
 X 2 a-calend.ads
-36K13*Calendar 358e17 30|6w10 17r22 26r104 54r80 56r140 57r132 58r136
-38I9*Time 30|17r31 26r113 54r89
-103V13*"<"{boolean} 30|57r141
-105V13*">"{boolean} 30|58r145
-X 24 chat_messages.ads
-9K9*Chat_Messages 39e18 30|7w6 18r28
-13M23*Seq_N_T 30|20r21 36r103 42r103
-15E14*Message_Type 15e74 30|19r21
-17R14*Mess_Id_T 20e19 30|45r75
-27A14*Destinations_T(22R14)<integer> 30|46r119
-31R14*Value_T 35e19 30|55r131
-X 30 insta.ads
+36K13*Calendar 358e17 31|6w10 17r22 26r104 54r80 56r140 57r132 58r136
+38I9*Time 31|17r31 26r113 54r89
+103V13*"<"{boolean} 31|57r141
+105V13*">"{boolean} 31|58r145
+X 25 chat_messages.ads
+12K9*Chat_Messages 74e18 31|7w6 18r28
+23E14*Message_Type 23e74 31|19r21
+25M14*Seq_N_T 31|20r21 36r103 42r103
+27R9*Mess_Id_T 30e14 31|45r75
+37A9*Destinations_T(32R9)<integer> 31|46r119
+41R9*Value_T 45e14 31|55r131
+X 31 insta.ads
 15K9*Insta 69l5 69e10
 18K17*CM=18:28 19r18 20r18 36r100 42r100 45r72 46r116 55r128
 21K17*LLU=21:29 25r64 30r100 35r64 40r100
-25K17*NP_Neighbors[42|16] 33r52
-33K17*Neighbors[44|5] 63r17 67r19
-35K17*NP_Latest_Msgs[42|16] 43r54
-43K17*Latest_Msgs[44|5] 64r17
-45K17*NP_Sender_Dests[46|16] 52r63
-52K17*Sender_Dests[48|5] 65r17
-54K17*NP_Sender_Buffering[46|16] 61r67
-61K17*Sender_Buffering[48|5] 66r17
-63w9*N_Map{44|7W14[33]}
-64w9*M_Map{44|7W14[43]}
-65w9*D_Map{48|7W14[52]}
-66w9*B_Map{48|7W14[61]}
-67a9*EP_Arry{44|23A17[33]}
-X 37 lower_layer.ads
+25K17*NP_Neighbors[43|13] 33r52
+33K17*Neighbors[45|7] 63r17 67r19
+35K17*NP_Latest_Msgs[43|13] 43r54
+43K17*Latest_Msgs[45|7] 64r17
+45K17*NP_Sender_Dests[47|16] 52r63
+52K17*Sender_Dests[49|8] 65r17
+54K17*NP_Sender_Buffering[47|16] 61r67
+61K17*Sender_Buffering[49|8] 66r17
+63w9*N_Map{45|9W9[33]}
+64w9*M_Map{45|9W9[43]}
+65w9*D_Map{49|10W9[52]}
+66w9*B_Map{49|10W9[61]}
+67a9*EP_Arry{45|26A12[33]}
+X 38 lower_layer.ads
 112P9*Address_CA(110R9)
-184V13*"="{boolean} 35|30i18
-186V13*">="{boolean} 35|29i18
-X 41 lower_layer_udp.ads
-4K9*Lower_Layer_UDP 30|8w6 21r29 22r13 41|150e20
-23P12*End_Point_Type{37|112P9} 30|25r68 35r68
-32V13*"="{boolean} 30|30r104 40r104
-X 42 maps_g.ads
-7+14 Key_Type 30|25r45 35r47
-8+14 Value_Type 30|26r81 36r81
-9*9 Null_Key{7+14} 30|27r81 37r81
-10*9 Null_Value{8+14} 30|28r81 38r81
-11i9 Max_Length{natural} 30|29r81 39r81
-12V23 "="{boolean} 30|30r81 40r81
-13V23 Key_To_String{string} 30|31r81 41r81
-14V23 Value_To_String{string} 30|32r81 42r81
-16k9*Maps_G 30|9w6 25r37 35r39 42|65e11
-35A14*Keys_Array_Type(37|112P9)<integer>
-X 44 maps_protector_g.ads
-5k9*Maps_Protector_G 30|10w6 33r34 43r36 44|62e21
-7W14*Prot_Map 30|63r27[33] 64r29[43]
-23A17*Keys_Array_Type{42|35A14[30|25]}<integer> 30|67r29[33]
-X 46 ordered_maps_g.ads
-8+14 Key_Type 30|45r56 54r60
-9+14 Value_Type 30|46r97 55r105
-10V23 "="{boolean} 30|47r97 56r105
-11V23 "<"{boolean} 30|48r97 57r105
-12V23 ">"{boolean} 30|49r97 58r105
-13V23 Key_To_String{string} 30|50r97 59r105
-14V23 Value_To_String{string} 30|51r97 60r105
-16k9*Ordered_Maps_G 30|11w6 45r40 54r44 46|48e19
-X 48 ordered_maps_protector_g.ads
-5k9*Ordered_Maps_Protector_G 30|12w6 52r37 61r41 48|49e29
-7W14*Prot_Map 30|65r30[52] 66r34[61]
-X 85 zeug.ads
-22K9*Zeug 30|13w6 31r100 32r100 41r100 47r124 48r120 49r124 50r116 51r116
-. 59r124 60r124 85|74e9
-40V18*SchneidenString{string} 30|31r105 41r105
-41V18*Time_Image_One{string} 30|32r105
-58V18*Image_Time{string} 30|59r129
-62V18*Mess_Iguales{boolean} 30|47r129
-64V18*Mess_Menor{boolean} 30|48r125
-66V18*Mess_Mayor{boolean} 30|49r129
-68V18*Image_Mess{string} 30|50r121
-70V18*Image_Destinations{string} 30|51r121
-72V18*Image_Value{string} 30|60r129
+184V13*"="{boolean} 36|30i18
+186V13*">="{boolean} 36|29i18
+X 42 lower_layer_udp.ads
+4K9*Lower_Layer_UDP 31|8w6 21r29 22r13 42|150e20
+23P12*End_Point_Type{38|112P9} 31|25r68 35r68
+32V13*"="{boolean} 31|30r104 40r104
+X 43 maps_g.ads
+4+9 Key_Type 31|25r45 35r47
+5+9 Value_Type 31|26r81 36r81
+6*4 Null_Key{4+9} 31|27r81 37r81
+7*4 Null_Value{5+9} 31|28r81 38r81
+8i4 Max_Length{natural} 31|29r81 39r81
+9V18 "="{boolean} 31|30r81 40r81
+10V18 Key_To_String{string} 31|31r81 41r81
+11V18 Value_To_String{string} 31|32r81 42r81
+13k9*Maps_G 31|9w6 25r37 35r39 43|61e11
+32A14*Keys_Array_Type(38|112P9)<integer>
+X 45 maps_protector_g.ads
+7k17*Maps_Protector_G 31|10w6 33r34 43r36 45|67e21
+9W9*Prot_Map 31|63r27[33] 64r29[43]
+26A12*Keys_Array_Type{43|32A14[31|25]}<integer> 31|67r29[33]
+X 47 ordered_maps_g.ads
+8+9 Key_Type 31|45r56 54r60
+9+9 Value_Type 31|46r97 55r105
+10V18 "="{boolean} 31|47r97 56r105
+11V18 "<"{boolean} 31|48r97 57r105
+12V18 ">"{boolean} 31|49r97 58r105
+13V18 Key_To_String{string} 31|50r97 59r105
+14V18 Value_To_String{string} 31|51r97 60r105
+16k9*Ordered_Maps_G 31|11w6 45r40 54r44 47|49e19
+X 49 ordered_maps_protector_g.ads
+8k12*Ordered_Maps_Protector_G 31|12w6 52r37 61r41 49|53e29
+10W9*Prot_Map 31|65r30[52] 66r34[61]
+X 86 zeug.ads
+22K9*Zeug 31|13w6 31r100 32r100 41r100 47r124 48r120 49r124 50r116 51r116
+. 59r124 60r124 86|74e9
+40V18*SchneidenString{string} 31|31r105 41r105
+41V18*Time_Image_One{string} 31|32r105
+58V18*Image_Time{string} 31|59r129
+62V18*Mess_Iguales{boolean} 31|47r129
+64V18*Mess_Menor{boolean} 31|48r125
+66V18*Mess_Mayor{boolean} 31|49r129
+68V18*Image_Mess{string} 31|50r121
+70V18*Image_Destinations{string} 31|51r121
+72V18*Image_Value{string} 31|60r129
 

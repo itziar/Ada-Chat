@@ -19,7 +19,6 @@ with Maps_Protector_G;
 with Ordered_Maps_G;
 with Ordered_Maps_Protector_G;
 with Pantalla;
-with Retrans;
 with Zeug;
 
 package Chat_Handler is

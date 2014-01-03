@@ -25,6 +25,7 @@ procedure Chat_Peer is
 	package LLU renames Lower_Layer_UDP;
 	use type LLU.End_Point_Type;
 	package ASU renames Ada.Strings.Unbounded;
+	use type ASU.Unbounded_String;
 	use type CM.Seq_N_T;
 	package Handlers renames Chat_Handler;
 
@@ -42,11 +43,10 @@ procedure Chat_Peer is
 	Nb2Port : ASU.Unbounded_String;
 	Nb2IP : ASU.Unbounded_String;
 	EP_Nb2 : LLU.End_Point_Type;
-	Nick : ASU.Unbounded_String;
 	Text : ASU.Unbounded_String;
 	Expired : Boolean := False;
 	Acept : Boolean:= False;
-	Confirm_Sent : Boolean;
+	Confirm_Sent : Boolean:= False;
 	EP_N : ASU.Unbounded_String;
 	Neighbour : ASU.Unbounded_String;
 	MyEP : ASU.Unbounded_String;
@@ -56,6 +56,7 @@ procedure Chat_Peer is
 	Fault_Error : exception;
 	Bad_Port : exception;
 	Argument : Integer;
+	Bett: CM.Message_Type;
 
 	--PARA LOS MENUS
 	--NEIGHBORS 
@@ -129,7 +130,7 @@ procedure Chat_Peer is
 		loop
 			Debug.Set_Status(True);
 			if Zeug.prompt then
-				Ada.Text_IO.Put(ASU.To_String(Nick) & " >> ");
+				Ada.Text_IO.Put(ASU.To_String(Zeug.Nick) & " >> ");
 			end if;
 			Text:= ASU.To_Unbounded_String(Ada.Text_IO.Get_Line);
 			if ASU.To_String(Text) /= ".salir" then
@@ -152,7 +153,11 @@ procedure Chat_Peer is
 				else
 					Seq_N:=Seq_N+1;
 					M_Debug.New_Message(Zeug.EP_H, Seq_N);
-					Messages.Send_Writer(Zeug.EP_H, Seq_N, Zeug.EP_H, Zeug.Nick, Text);
+					Bett:=CM.Writer;
+		Messages.Send(Bett, Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick, Text, Confirm_Sent, Zeug.EP_H);
+					Debug.Put("FLOOD WRITER ", Pantalla.Amarillo);
+					Debug.Put_Line(ASU.To_String(Zeug.Image_EP(Zeug.EP_H) & CM.Seq_N_T'Image(Seq_N) & " " & Zeug.Image_EP(Zeug.EP_H) & " " & Zeug.Nick & " " & Text));		
+   			--CH.Rellena_Buffer(CM.EP_H, EP_R, CM.EP_H, CM.EP_H,Msg, CM.Nick, Text, CH.Seq_N, Confirm_Sent);
 				end if;
 			end if;
 		exit when ASU.To_String(Text)=".salir";
@@ -163,6 +168,9 @@ procedure Chat_Peer is
 begin
 	Debug.Set_Status(Zeug.Purge);
 	Argument:= Ada.Command_Line.Argument_Count;
+	if Argument<5 then
+		raise Usage_Error;
+	end if;
 	if (Argument /= 5 and Argument /= 7 and Argument /= 9) then
 		raise Usage_Error;   
 	end if;	
@@ -211,32 +219,37 @@ begin
 		M_Debug.New_Message(Zeug.EP_H, Seq_N);
 		Debug.Put("FLOOD Init ", Pantalla.Amarillo);
 		Zeug.Schneiden(Zeug.EP_H, MyEP);
+		Bett:=CM.Init;
 		Debug.Put_Line(ASU.TO_String(MyEP) & " " & ASU.To_String(MyEP) & " " & CM.Seq_N_T'Image(Seq_N));
-		Messages.Send_Init(Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick);
+		Messages.Send(Bett, Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick, Text, Confirm_Sent, Zeug.EP_H);
+
 		Ada.Text_IO.Put_Line(" ");
 		Messages.Receive_Reject(EP_R, acept);
 		if acept then
 			Seq_N:=Seq_N+1;
 			M_Debug.New_Message(Zeug.EP_H, Seq_N);
-			Messages.Send_Confirm(Zeug.EP_H,Seq_N,Zeug.EP_H, Zeug.Nick);
+			Bett:=CM.Confirm;
+			Messages.Send(Bett, Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick, Text, Confirm_Sent, Zeug.EP_H);
 			Debug.Put_Line("Fin del Protocolo de Admisión.");
 		else
 			Confirm_Sent:=False;
 			Seq_N:=Seq_N+1;
-			Messages.Send_Logout(Zeug.EP_H, Seq_N, Zeug.EP_H, Zeug.Nick, Confirm_Sent);			
+			Bett:=CM.Logout;
+		Messages.Send(Bett, Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick, Text, Confirm_Sent, Zeug.EP_H);
 		end if;
 	end if;
 
 	if acept then
-		Ada.Text_IO.Put_Line("Peer-Chat v1.0");
+		Ada.Text_IO.Put_Line("Peer-Chat v2.0");
 		Ada.Text_IO.Put_Line("==============");
 		Ada.Text_IO.Put_Line(" ");
-		Ada.Text_IO.Put_Line("Entramos en el chat con Nick: " & ASU.To_String(Nick));
+		Ada.Text_IO.Put_Line("Entramos en el chat con Nick: " & ASU.To_String(Zeug.Nick));
 		Ada.Text_IO.Put_Line(".h para help");
 		Loop_Writer(Seq_N);
 		Confirm_Sent:=True;
 		Seq_N:= Seq_N+1;
-		Messages.Send_Logout(Zeug.EP_H, Seq_N, Zeug.EP_H, Zeug.Nick, Confirm_Sent);
+		Bett:=CM.Logout;
+		Messages.Send(Bett, Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick, Text, Confirm_Sent, Zeug.EP_H);
 	end if; 
 	delay Duration(Zeug.Max_Delay/1000);
 	LLU.Finalize;
