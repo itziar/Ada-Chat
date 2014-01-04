@@ -6,7 +6,55 @@
 
 package body Messages is
 
-	
+	procedure Send_Supernode(EP_H: LLU.End_Point_Type; EP_R: LLU.End_Point_Type; EP_H_S: LLU.End_Point_Type; N: Integer) is
+		Buffer: aliased LLU.Buffer_Type(1024);
+	begin
+		LLU.Reset(Buffer);
+		CM.Message_Type'Output(Buffer'Access, CM.Supernode);
+		LLU.End_Point_Type'Output(Buffer'Access, EP_H);
+		LLU.End_Point_Type'Output(Buffer'Access, EP_R);
+		Integer'Output(Buffer'Access, N);
+		LLU.Send(EP_H_S, Buffer'Access);
+	end Send_Supernode;
+
+	procedure Management_Supernode (EP_H: LLU.End_Point_Type; EP_R: LLU.End_Point_Type; N: in out Integer) is
+		Buffer: aliased LLU.Buffer_Type(1024);
+		EP_Arry	: Insta.Neighbors.Keys_Array_Type;
+	begin
+		M_Debug.New_Neighbour(EP_H);
+		LLU.Reset(Buffer);
+		CM.Message_Type'Output(Buffer'Access, CM.Supernode);
+		if Insta.Neighbors.Map_Length(Insta.N_Map)<N then
+			N:=Insta.Neighbors.Map_Length(Insta.N_Map);
+		end if;
+		Integer'Output(Buffer'Access, N);
+		EP_Arry := Insta.Neighbors.Get_Keys(Insta.N_Map);
+		for i in 1..N loop
+			if EP_Arry(i) /= EP_H then
+				LLU.End_Point_Type'Output(Buffer'Access, EP_Arry(i)); 
+			end if;
+		end loop;
+		LLU.Send(EP_R, Buffer'Access);
+	end;
+
+	procedure Receive_Supernode (EP_R: LLU.End_Point_Type) is
+		Buffer: aliased LLU.Buffer_Type(1024);
+		Bett: CM.Message_Type;
+		N: Integer;
+		Vecino: LLU.End_Point_Type;
+		Expired: Boolean:=False;
+	begin
+		LLU.Reset(Buffer);
+		LLU.Receive (EP_R, Buffer'Access, 2.0, Expired);
+		if not Expired then
+			Bett:=CM.Message_Type'Input(Buffer'Access);
+			N:=Integer'Input(Buffer'Access);
+			for i in 1..N-1 loop
+				Vecino:= LLU.End_Point_Type'Input(Buffer'Access);
+				M_Debug.New_Neighbour(Vecino);
+			end loop;
+		end if;	
+	end Receive_Supernode;
 ---------------------------------------------------------------------------------------------------------------	
 --MENSAJE REJECT--
 	procedure Receive_Reject (EP_R: LLU.End_Point_Type; acept: out Boolean) is
@@ -63,7 +111,6 @@ procedure Management (Bett: CM.Message_Type; EP_H_Creat: LLU.End_Point_Type; Seq
 begin
 	M_Debug.Receive (Bett, EP_H_Creat, Seqi, EP_H_Rsnd, Nick);
 	Insta.Latest_Msgs.Get(Insta.M_Map, EP_H_Creat, Seq, Success);
-	--Ada.Text_IO.Put_Line(CM.Seq_N_T'Image(Seq) & CM.Seq_N_T'Image(Seqi) & " Seq y Seq_N");
 	if not success or Seqi=Seq+1 then --PRESENTE PROCESAMIENTO ESPECIFICO
 		M_Debug.New_Message (EP_H_Creat, Seqi);
 		Debug.Put_Line("mensaje del presente", Pantalla.Azul);		
@@ -127,12 +174,12 @@ begin
 	M_Debug.Flood (Bett, EP_H_Rsnd, EP_H_Creat, Seqi);
    	EP_Arry := Insta.Neighbors.Get_Keys(Insta.N_Map);
    	for I in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
-   		if EP_Arry(I) /= EP_H_Creat and EP_Arry(I) /= EP_H_Receive then
-			LLU.Send(EP_Arry(I), CM.P_Buffer);
+   		if EP_Arry(i) /= EP_H_Creat and EP_Arry(i) /= EP_H_Receive then
+			LLU.Send(EP_Arry(i), CM.P_Buffer);
 			Hora_Rtx := Ada.Calendar.Clock + 2*Duration(CM.Max_Delay)/1000;
 			Envio := True;
 			M_Debug.Send(EP_Arry(i));
-   			ValD(I) := (EP_Arry(I), 0);
+   			ValD(I) := (EP_Arry(i), 0);
 			ValB := (EP_H_Creat, Seqi, CM.P_Buffer);
 			Insta.Sender_Buffering.Put(Insta.B_Map, Hora_Rtx, ValB);
 			Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Relay'Access);
@@ -181,5 +228,23 @@ procedure Free is new Ada.Unchecked_Deallocation(LLU.Buffer_Type, CM.Buffer_A_T)
 		end if;
 	end Relay;
 
+	procedure Manejador is
+		--continuar : ASU.Unbounded_String;
+	begin
+		--Ada.Text_IO.Put_Line("Ha pulsado CTRL + C ... Desea continuar? (Y/N)");
+		--continuar:= ASU.To_Unbounded_String(Ada.Text_IO.Get_Line);
+		--while continuar/="Y" or continuar/="y" or continuar/="N" or continuar/="n" loop
+			--Ada.Text_IO.Put_Line("Pulse Y/N");
+			--continuar:= ASU.To_Unbounded_String(Ada.Text_IO.Get_Line);	
+		--end loop;
+		--if continuar="Y" or continuar="y" then
+			--Ada.Text_IO.Put_Line("Continuamos con el chat");
+		--elsif continuar="N" or continuar="n" then
+			Ada.Text_IO.Put_Line("Procederemos al cierre del chat, por favor espere");
+			LLU.Finalize;
+			Timed_Handlers.Finalize;
+			raise Program_Error;
+		--end if;
+	end Manejador;
 
 end Messages;

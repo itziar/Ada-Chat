@@ -27,11 +27,20 @@ package body Chat_Handler is
 		Value : CM.Destinations_T;
 		Mess : CM.Mess_Id_T;
 		Send: Boolean:= False;
+		N: Integer;
 
 	begin
 		Debug.Set_Status(CM.Purge);
 		Bett:=CM.Message_Type'Input(P_Buffer);
-		if Bett=CM.Ack then
+		if Bett=CM.Supernode then
+			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
+			EP_R_Creat:=LLU.End_Point_Type'Input(P_Buffer);
+			N:=Integer'Input(P_Buffer);
+			LLU.Reset(P_Buffer.all);
+			M_Debug.Receive_Supernode (EP_H_Creat);
+			--procesamiento para el supernodo
+			Messages.Management_Supernode(EP_H_Creat, EP_R_Creat, N);
+		elsif Bett=CM.Ack then
 			EP_H_Acker:=LLU.End_Point_Type'Input(P_Buffer);
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
 			Seq_N:=CM.Seq_N_T'Input(P_Buffer);

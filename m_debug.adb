@@ -75,6 +75,12 @@ package body M_Debug is
 		Ada.Text_IO.Put_Line("Usuario rechazado porque " & CM.SchneidenString(EP_H_A) & " está usando el mismo nick");
 	end;
 
+	procedure Receive_Supernode (EP_H_A: LLU.End_Point_Type) is
+	begin
+		Debug.Put ("RCV Supernode ", Pantalla.Amarillo);
+		Debug.Put_Line(CM.SchneidenString(EP_H_A));
+	end;
+
 	procedure Send_Ack (EP_H_Acker: LLU.End_Point_Type; EP_H_Creat: LLU.End_Point_Type; Seqy: CM.Seq_N_T) is
 	begin
 		Debug.Put("Send Ack ", Pantalla.Amarillo);

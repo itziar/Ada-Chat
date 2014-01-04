@@ -2,7 +2,7 @@ V "GNAT Lib v4.6"
 P SS ZX
 R nnnnnnnvnvvnnnnnnnnnnnnnnvnnnvnnnnvnnnnnnvnnvnnnnnnnnnvnnnvnnnnvnnnnnnnnnnnnnnnn
 
-U chat_messages%b	chat_messages.adb	1d1adf4d NE OO PK
+U chat_messages%b	chat_messages.adb	1a518f56 NE OO PK
 W ada.tags%s		a-tags.adb		a-tags.ali
 W system%s		system.ads		system.ali
 W system.compare_array_unsigned_8%s  s-carun8.adb  s-carun8.ali
@@ -19,7 +19,7 @@ W system.soft_links%s	s-soflin.adb		s-soflin.ali
 W system.standard_library%s  s-stalib.adb	s-stalib.ali
 W system.unsigned_types%s  s-unstyp.ads		s-unstyp.ali
 
-U chat_messages%s	chat_messages.ads	54d24bf1 EE OO PK
+U chat_messages%s	chat_messages.ads	53991bea EE OO PK
 W ada%s			ada.ads			ada.ali
 W ada.calendar%s	a-calend.adb		a-calend.ali
 W ada.command_line%s	a-comlin.adb		a-comlin.ali
@@ -68,7 +68,7 @@ D a-unccon.ads		20070406091342 f9eb8f06
 D ada_sockets.ads	20080723100827 372c9145
 D c_sockets.ads		20120529214139 44862f45
 D c_sockets_arch.ads	20120529194800 c328cf60
-D chat_messages.ads	20140104134433 4da3ae06
+D chat_messages.ads	20140104165953 4ae8fe1d
 D chat_messages.adb	20140104134742 50b9714b
 D concurrency.ads	20081111152635 d11dedce
 D debug.ads		20131119133210 410922c8
@@ -164,13 +164,14 @@ X 23 chat_messages.ads
 24K17*C_L=24:33
 25K17*LLU=25:29 26r13 33r28 33r50 36r76 37r76 38r16 47r22 52r22 58r35 61r30
 . 72r45 24|39r44 44r45 67r24 67r47 72r24 72r47
-29E14*Message_Type 29e74
+29E14*Message_Type 29e85
 29n31*Init{29E14}
 29n37*Reject{29E14}
 29n45*Confirm{29E14}
 29n54*Writer{29E14}
 29n62*Logout{29E14}
 29n70*Ack{29E14}
+29n75*Supernode{29E14}
 31M14*Seq_N_T 35r29 48r23 62r25 24|77r80 93r60
 33p9*Null_EP{40|23P12} 52r44 24|84r42
 34i9*Null_Hour{2|38I9}

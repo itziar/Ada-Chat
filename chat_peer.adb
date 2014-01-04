@@ -17,6 +17,7 @@ with Insta;
 with Messages;
 with M_Debug;
 with Timed_Handlers;
+with Gnat.Ctrl_C;
 
 procedure Chat_Peer is
 	package CM renames Chat_Messages;
@@ -42,6 +43,10 @@ procedure Chat_Peer is
 	Nb2Port : ASU.Unbounded_String;
 	Nb2IP : ASU.Unbounded_String;
 	EP_Nb2 : LLU.End_Point_Type;
+	SHost : ASU.Unbounded_String;
+	SPort : ASU.Unbounded_String;
+	SIP : ASU.Unbounded_String;
+	EP_S : LLU.End_Point_Type;
 	Text : ASU.Unbounded_String;
 	Expired : Boolean := False;
 	Acept : Boolean:= False;
@@ -56,6 +61,9 @@ procedure Chat_Peer is
 	Bad_Port : exception;
 	Argument : Integer;
 	Bett: CM.Message_Type;
+	supernode: Boolean :=False;
+	Supernode_Error : exception;
+	N: Integer;
 
 	--PARA LOS MENUS
 	--NEIGHBORS 
@@ -167,9 +175,10 @@ begin
 	if Argument<5 then
 		raise Usage_Error;
 	end if;
-	if (Argument /= 5 and Argument /= 7 and Argument /= 9) then
+	if (Argument /= 5  and Argument /= 7 and Argument/=8 and Argument /= 9 and Argument/=10 and Argument/=12) then
 		raise Usage_Error;   
 	end if;	
+	Gnat.Ctrl_C.Install_Handler(Messages.Manejador'Access);
 	Port:= Integer'Value(Ada.Command_Line.Argument(1));
 	CM.Min_Delay:=Integer'Value(Ada.Command_Line.Argument(3));
 	CM.Max_Delay:=Integer'Value(Ada.Command_Line.Argument(4));
@@ -182,7 +191,7 @@ begin
 	end if;   
 	if Port < 1024 or Port > 1_000_000 then
 		raise Bad_Port;
-	end if;	
+	end if;
 	
 	Host:= ASU.To_Unbounded_String(LLU.Get_Host_Name);
 	IP:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(Host)));
@@ -191,14 +200,14 @@ begin
 	LLU.Bind(CM.EP_H, Handlers.EP_Handler'Access);
 	LLU.Bind_Any(EP_R);
 	--Para la simulacion de perdidas de paquetes
-	LLU.Set_Random_Propagation_Delay(CM.Min_Delay, CM.Max_Delay);
-	LLU.Set_Faults_Percent(CM.Fault_Pct);
+	--LLU.Set_Random_Propagation_Delay(CM.Min_Delay, CM.Max_Delay);
+	--LLU.Set_Faults_Percent(CM.Fault_Pct);
 		
 	if Argument = 5 then
 		Debug.Put_Line("NO hacemos protocolo de admisión pues no tenemos contactos iniciales ...");
 		acept:=True;
 	end if;
-	if Argument = 7 then
+	if Argument = 7 or Argument=10  then
 		Nb1Host:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(6));
 		Nb1Port:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(7));
 		Nb1IP:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(Nb1Host)));
@@ -206,7 +215,7 @@ begin
 		M_Debug.New_Neighbour(EP_Nb1);			
 
 	end if;
-	if Ada.Command_Line.Argument_Count = 9 then		
+	if Argument = 9 or Argument=12 then		
 		Nb1Host:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(6));
 		Nb1Port:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(7));
 		Nb1IP:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(Nb1Host)));
@@ -218,7 +227,48 @@ begin
 		M_Debug.New_Neighbour(EP_Nb1);
 		M_Debug.New_Neighbour(EP_Nb2);			
 	end if;
-	if Argument=7 or Argument=9 then
+	--SUPERNODO
+	if Argument=8 then --puede ser supernodo
+		if Ada.Command_Line.Argument(6)="-s" or Ada.Command_Line.Argument(6)="-S" then --es supernodo
+			supernode:=True;
+			SHost:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(7));
+			SPort:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(8));
+			SIP:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(SHost)));
+			EP_S:= LLU.Build(ASU.To_String(SIP), Integer'Value(ASU.To_String(SPort)));
+		else
+			raise Supernode_Error;
+		end if;
+	elsif Argument=10 then --puede ser supernodo
+		if Ada.Command_Line.Argument(8)="-s" or Ada.Command_Line.Argument(8)="-S" then --es supernodo
+			supernode:=True;
+			SHost:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(9));
+			SPort:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(10));
+			SIP:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(SHost)));
+			EP_S:= LLU.Build(ASU.To_String(SIP), Integer'Value(ASU.To_String(SPort)));
+		else
+			raise Supernode_Error;
+		end if;
+	elsif Argument=12 then --puede ser supernodo
+		if Ada.Command_Line.Argument(10)="-s" or Ada.Command_Line.Argument(10)="-S" then --es supernodo
+			supernode:=True;
+			SHost:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(11));
+			SPort:= ASU.To_Unbounded_String(Ada.Command_Line.Argument(12));
+			SIP:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(SHost)));
+			EP_S:= LLU.Build(ASU.To_String(SIP), Integer'Value(ASU.To_String(SPort)));
+		else
+			raise Supernode_Error;
+		end if;
+	end if;
+
+	if supernode then
+		Ada.Text_IO.Put_Line("Numero de vecinos?");
+		N:= Integer'Value(Ada.Text_IO.Get_Line);
+		Messages.Send_Supernode(CM.EP_H, EP_R, EP_S, N);
+		Messages.Receive_Supernode(EP_R);
+		M_Debug.New_Neighbour(EP_S);
+	end if;
+	--	
+	if Argument=7 or Argument=8 or Argument=9 or Argument=10 or Argument=12 then
 		Debug.Put_Line("Iniciando Protocolo de Admision ... ");		
 		Seq_N:=1;
 		M_Debug.New_Message(CM.EP_H, Seq_N);
@@ -239,7 +289,7 @@ begin
 			Messages.Send(Bett, CM.EP_H, Seq_N, CM.EP_H, EP_R, CM.Nick, Text, Confirm_Sent, CM.EP_H);
 		end if;
 	end if;
-
+	
 	if acept then
 		M_Debug.Initial;
 		Loop_Writer(Seq_N);
@@ -257,6 +307,10 @@ exception
 		Debug.Put_Line ("Uso: ./chat_peer port nick min_delay max_delay fault_pct [[host port] [host port]]", Pantalla.Rojo);
 		LLU.Finalize;
 		Timed_Handlers.Finalize;
+	when Supernode_Error =>
+		Debug.Put_Line ("Uso: ./chat_peer port nick min_delay max_delay fault_pct [-s host port] [host port] [-s host port] [host port] [-s host port]", Pantalla.Rojo);
+		LLU.Finalize;
+		Timed_Handlers.Finalize;
 	when Fault_Error=>
 		Debug.Put_Line("fault_pct debe ser entre 0 y 100", Pantalla.Rojo);
 		LLU.Finalize;
@@ -267,6 +321,14 @@ exception
 		Timed_Handlers.Finalize;
 	when Bad_Port =>
 		Debug.Put_Line ("Puerto incorrecto: el rango comprendido es 1024-1.000.000", Pantalla.Rojo);
+		LLU.Finalize;
+		Timed_Handlers.Finalize;
+	when Program_Error=>
+		Confirm_Sent:=True;
+		Bett:=Cm.Logout;
+		Seq_N:=Seq_N+1;
+		Messages.Send(Bett, CM.EP_H, Seq_N, CM.EP_H, EP_R, CM.Nick, Text, Confirm_Sent, CM.EP_H);
+		delay Duration((10*CM.Max_Delay)/1000);
 		LLU.Finalize;
 		Timed_Handlers.Finalize;
 	when Ex:others =>

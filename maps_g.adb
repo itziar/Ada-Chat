@@ -134,7 +134,7 @@ package body Maps_G is
    begin
       P_Aux := M.P_First;
       while P_Aux /= null loop
-         Debug.Put(Key_To_String(P_Aux.Key) & " " & Value_To_String(P_Aux.Value), Pantalla.Rojo);
+         Debug.Put_Line(Key_To_String(P_Aux.Key) & " " & Value_To_String(P_Aux.Value), Pantalla.Rojo);
          P_Aux := P_Aux.Next;
       end loop;
    end Print_Map;

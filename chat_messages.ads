@@ -26,7 +26,7 @@ package Chat_Messages is
 	use LLU;
 	use type ASU.Unbounded_String;
 
-	type Message_Type is (Init, Reject, Confirm, Writer, Logout, Ack);
+	type Message_Type is (Init, Reject, Confirm, Writer, Logout, Ack, Supernode);
 
 	type Seq_N_T is mod Integer'Last;
 

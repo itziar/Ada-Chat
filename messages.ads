@@ -31,7 +31,10 @@ package Messages is
 	use type Ada.Calendar.Time;
 
 	
-	
+	procedure Send_Supernode(EP_H: LLU.End_Point_Type; EP_R: LLU.End_Point_Type; EP_H_S: LLU.End_Point_Type; N: Integer);
+	procedure Management_Supernode (EP_H: LLU.End_Point_Type; EP_R: LLU.End_Point_Type; N: in out Integer);
+	procedure Receive_Supernode (EP_R: LLU.End_Point_Type);
+
 	--MENSAJE REJECT--
 	procedure Receive_Reject (EP_R: LLU.End_Point_Type; acept: out Boolean);
 	procedure Send_Reject (EP_H: LLU.End_Point_Type; Nick: ASU.Unbounded_String; EP_R_Creat: LLU.End_Point_Type);
@@ -46,5 +49,7 @@ procedure Management (Bett: CM.Message_Type; EP_H_Creat: LLU.End_Point_Type; Seq
 procedure Send(Bett: CM.Message_Type; EP_H_Creat: LLU.End_Point_Type; Seqi: CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; EP_R_Creat: LLU.End_Point_Type; Nick : ASU.Unbounded_String; Text: ASU.Unbounded_String; Confirm_Sent: Boolean; EP_H_Receive: LLU.End_Point_Type);
 
 procedure Relay(Timer: Ada.Calendar.Time);
+
+procedure Manejador;
 
 end Messages;

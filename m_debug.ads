@@ -34,5 +34,6 @@ package M_Debug is
 	procedure Send_Ack (EP_H_Acker: LLU.End_Point_Type; EP_H_Creat: LLU.End_Point_Type; Seqy: CM.Seq_N_T);
 	procedure Receive_Ack (EP_H_Acker: LLU.End_Point_Type; EP_H_Creat: LLU.End_Point_Type; Seqy: CM.Seq_N_T);
 	procedure Retrans (EP: LLU.End_Point_Type; Retries: Natural);
+	procedure Receive_Supernode (EP_H_A: LLU.End_Point_Type);
 
 end M_Debug;
