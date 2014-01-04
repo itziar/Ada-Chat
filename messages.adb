@@ -17,7 +17,7 @@ package body Messages is
 		Nick: ASU.Unbounded_String;
 		EPHA: ASU.Unbounded_String;
 	begin
-		Debug.Set_Status(Zeug.Purge);
+		Debug.Set_Status(CM.Purge);
 		LLU.Reset(Buffer);
 		LLU.Receive (EP_R, Buffer'Access, 2.0, Expired);
 		if not Expired then
@@ -25,10 +25,7 @@ package body Messages is
 			EP_H_A:=LLU.End_Point_Type'Input(Buffer'Access); 
 			Nick:= ASU.Unbounded_String'Input(Buffer'Access);
 			acept:=False;
-			Debug.Put ("RCV Reject", Pantalla.Amarillo);
-			Zeug.Schneiden(EP_H_A, EPHA);
-			Debug.Put_Line(ASU.To_String(EPHA) & ASU.To_String(Nick));
-			Ada.Text_IO.Put_Line("Usuario rechazado porque " & ASU.To_String(EPHA) & " está usando el mismo nick");
+			M_Debug.Receive_Reject(EP_H_A, Nick);
 		else
 			acept:= True;
 		end if;	
@@ -37,6 +34,7 @@ package body Messages is
 	procedure Send_Reject (EP_H: LLU.End_Point_Type; Nick: ASU.Unbounded_String; EP_R_Creat: LLU.End_Point_Type) is
 		P_Buffer: aliased LLU.Buffer_Type(1024);
 	begin
+		M_Debug.Send_Reject(EP_H, Nick);
 		LLU.Reset(P_Buffer);
 		CM.Message_Type'Output(P_Buffer'Access, CM.Reject);
 		LLU.End_Point_Type'Output(P_Buffer'Access, EP_H);
@@ -49,6 +47,7 @@ package body Messages is
 	procedure Send_Ack(EP_H_Acker: LLU.End_Point_Type; EP_H_Creat: LLU.End_Point_Type; Seq_N: CM.Seq_N_T; EP_Dest: LLU.End_Point_Type) is
 		Buffer : aliased LLU.Buffer_Type(1024);
 	begin
+		M_Debug.Send_Ack(EP_H_Acker, EP_H_Creat, Seq_N);
 		LLU.Reset(Buffer);
 		CM.Message_Type'Output(Buffer'Access, CM.Ack);
 		LLU.End_Point_Type'Output(Buffer'Access,EP_H_Acker);
@@ -57,31 +56,54 @@ package body Messages is
 		LLU.Send(EP_Dest, Buffer'Access);
 	end Send_Ack;
 ---------------------------------------------------------------------------------------------------------------
-procedure Management (Bett: CM.Message_Type; EP_H_Creat: LLU.End_Point_Type; Seq_N: in out CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; Nick: ASU.Unbounded_String; Text: ASU.Unbounded_String) is
+procedure Management (Bett: CM.Message_Type; EP_H_Creat: LLU.End_Point_Type; Seqi: in out CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; EP_R_Creat: LLU.End_Point_Type; Nick: ASU.Unbounded_String; Text: ASU.Unbounded_String; Confirm_Sent: Boolean) is
 	Seq: CM.Seq_N_T;
 	Success: Boolean;
+	zeit: Ada.Calendar.Time;
 begin
-	M_Debug.Receive (Bett, EP_H_Creat, Seq_N, EP_H_Rsnd, Nick);
+	M_Debug.Receive (Bett, EP_H_Creat, Seqi, EP_H_Rsnd, Nick);
 	Insta.Latest_Msgs.Get(Insta.M_Map, EP_H_Creat, Seq, Success);
-	Ada.Text_IO.Put_Line(CM.Seq_N_T'Image(Seq) & CM.Seq_N_T'Image(Seq_N) & " Seq y Seq_N");
-	if not success or Seq_N=Seq+1 then --PRESENTE PROCESAMIENTO ESPECIFICO
-		M_Debug.New_Message (EP_H_Creat, Seq_N);
-		Ada.Text_IO.Put("PRESENTE");
-		M_Debug.Receive (Bett, EP_H_Creat, Seq_N, EP_H_Rsnd, Nick);
-		Ada.Text_IO.Put_Line(ASU.To_String(Nick) & ": " & ASU.To_String(Text));
-	--	Send_Writer(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Text);
-		Send_Ack(Zeug.EP_H, EP_H_Creat, Seq_N, EP_H_Rsnd);
-	elsif Seq_N > Seq+1 then --FUTURO SOLO REENVIAR
-	--	Send_Writer(EP_H_Creat, Seq_N, Zeug.EP_H, Nick, Text);
-		Ada.Text_IO.Put("FUTURO");
-	elsif Seq >= Seq_N then --PASADO SOLO ACK
-		Send_Ack(Zeug.EP_H, EP_H_Creat, Seq_N, EP_H_Rsnd);
-		Ada.Text_IO.Put("PASADO");
+	--Ada.Text_IO.Put_Line(CM.Seq_N_T'Image(Seq) & CM.Seq_N_T'Image(Seqi) & " Seq y Seq_N");
+	if not success or Seqi=Seq+1 then --PRESENTE PROCESAMIENTO ESPECIFICO
+		M_Debug.New_Message (EP_H_Creat, Seqi);
+		Debug.Put_Line("mensaje del presente", Pantalla.Azul);		
+		if Bett/=CM.Logout then
+			Insta.Neighbors.Get(Insta.N_Map, EP_H_Creat, zeit, Success);	
+			if EP_H_Creat=EP_H_Rsnd and not success then
+				M_Debug.New_Neighbour(EP_H_Creat);
+			end if;
+		end if;
+		if Bett=CM.Confirm then
+			Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha entrado en el chat");
+		end if;
+		if Bett=CM.Init and nick = CM.Nick then
+			Messages.Send_Reject (CM.EP_H, Nick, EP_R_Creat);
+		end if;
+		M_Debug.Receive (Bett, EP_H_Creat, Seqi, EP_H_Rsnd, Nick);
+		if Bett = CM.Writer then
+			Ada.Text_IO.Put_Line(ASU.To_String(Nick) & ": " & ASU.To_String(Text));
+		end if;
+		if Bett=CM.Logout then
+			if Confirm_Sent then
+				Ada.Text_IO.Put_Line(ASU.To_String(Nick) & " ha salido del chat");
+			end if;
+			if EP_H_Creat = EP_H_Rsnd then
+				M_Debug.Delete_Neighbors(EP_H_Creat);
+			end if;
+		end if;
+		Send(Bett, EP_H_Creat, Seqi, CM.EP_H, EP_R_Creat, Nick, Text, Confirm_Sent, EP_H_Rsnd);
+		Send_Ack(CM.EP_H, EP_H_Creat, Seqi, EP_H_Rsnd);
+	elsif Seqi > Seq+1 then --FUTURO SOLO REENVIAR
+		Debug.Put_Line("mensaje del futuro", Pantalla.Azul);
+		Send(Bett, EP_H_Creat, Seqi, CM.EP_H, EP_R_Creat, Nick, Text, Confirm_Sent, EP_H_Rsnd);
+	elsif Seq >= Seqi then --PASADO SOLO ACK
+		Debug.Put_Line("mensaje del pasado", Pantalla.Azul);
+		Send_Ack(CM.EP_H, EP_H_Creat, Seqi, EP_H_Rsnd);
 	end if;
 end Management;
 
-procedure Send(Bett: CM.Message_Type; EP_H_Creat: LLU.End_Point_Type; Seq_N_In: CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; EP_R_Creat: LLU.End_Point_Type; Nick : ASU.Unbounded_String; Text: ASU.Unbounded_String; Confirm_Sent: Boolean; EP_H_Receive: LLU.End_Point_Type) is
-	EP_Array	: Insta.Neighbors.Keys_Array_Type;
+procedure Send(Bett: CM.Message_Type; EP_H_Creat: LLU.End_Point_Type; Seqi: CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; EP_R_Creat: LLU.End_Point_Type; Nick : ASU.Unbounded_String; Text: ASU.Unbounded_String; Confirm_Sent: Boolean; EP_H_Receive: LLU.End_Point_Type) is
+	EP_Arry	: Insta.Neighbors.Keys_Array_Type;
    	Mess		: CM.Mess_Id_T;
    	ValD		: CM.Destinations_T;
    	Envio		: Boolean := False;
@@ -91,7 +113,7 @@ begin
 	CM.P_Buffer := new LLU.Buffer_Type(1024);
    	CM.Message_Type'Output(CM.P_Buffer, Bett);
    	LLU.End_Point_Type'Output(CM.P_Buffer, EP_H_Creat);
-   	CM.Seq_N_T'Output(CM.P_Buffer, Seq_N_In);
+   	CM.Seq_N_T'Output(CM.P_Buffer, Seqi);
    	LLU.End_Point_Type'Output(CM.P_Buffer, EP_H_Rsnd);
    	if Bett = CM.Init then
    		LLU.End_Point_Type'Output(CM.P_Buffer, EP_R_Creat);
@@ -102,24 +124,24 @@ begin
    	elsif Bett = CM.Logout then
    		Boolean'Output(CM.P_Buffer, Confirm_Sent);
    	end if;
-   	EP_Array := Insta.Neighbors.Get_Keys(Insta.N_Map);
+	M_Debug.Flood (Bett, EP_H_Rsnd, EP_H_Creat, Seqi);
+   	EP_Arry := Insta.Neighbors.Get_Keys(Insta.N_Map);
    	for I in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
-   		if EP_Array(I) /= EP_H_Creat and EP_Array(I) /= EP_H_Receive then
-			LLU.Send(EP_Array(I), CM.P_Buffer);
+   		if EP_Arry(I) /= EP_H_Creat and EP_Arry(I) /= EP_H_Receive then
+			LLU.Send(EP_Arry(I), CM.P_Buffer);
 			Hora_Rtx := Ada.Calendar.Clock + 2*Duration(CM.Max_Delay)/1000;
 			Envio := True;
-			Debug.Put_Line("        send to: " & Zeug.Image_EP(EP_Array(I)));
-   			ValD(I) := (EP_Array(I), 0);
-			ValB := (EP_H_Creat, Seq_N_In, CM.P_Buffer);
+			M_Debug.Send(EP_Arry(i));
+   			ValD(I) := (EP_Arry(I), 0);
+			ValB := (EP_H_Creat, Seqi, CM.P_Buffer);
 			Insta.Sender_Buffering.Put(Insta.B_Map, Hora_Rtx, ValB);
 			Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Relay'Access);
 		end if;
    	end loop;
    	if Envio then
-			Mess := (EP_H_Creat, Seq_N_In);
+			Mess := (EP_H_Creat, Seqi);
 			Insta.Sender_Dests.Put(Insta.D_Map, Mess, ValD);
 		end if;
- --  	T_IO.New_Line(1);
 end Send;
 
 procedure Free is new Ada.Unchecked_Deallocation(LLU.Buffer_Type, CM.Buffer_A_T);
@@ -134,15 +156,14 @@ procedure Free is new Ada.Unchecked_Deallocation(LLU.Buffer_Type, CM.Buffer_A_T)
 		--Bett: CM.Message_Type;
 	begin
 		Insta.Sender_Buffering.Get(Insta.B_Map, Timer, ValB, Success);
-		Ada.Text_IO.Put_Line(Boolean'Image(Success));
 		Mess := (ValB.EP_H_Creat, ValB.Seq_N);
 		Insta.Sender_Dests.Get(Insta.D_Map, Mess, ValD, Success);
 		if Success then
 			for i in 1..10 loop
-				if ValD(i).EP/=Zeug.Null_EP and ValD(i).Retries <10 then
+				if ValD(i).EP/=CM.Null_EP and ValD(i).Retries <10 then
 					LLU.Send(ValD(i).EP,ValB.P_Buffer);
-					Ada.Text_IO.Put_Line("Reenvio"& Zeug.SchneidenString(ValD(i).EP));
-					New_Timer:= Ada.Calendar.Clock+2*Duration(Zeug.Max_Delay)/1000;
+					M_Debug.Retrans(ValD(i).EP, ValD(i).Retries+1);
+					New_Timer:= Ada.Calendar.Clock+2*Duration(CM.Max_Delay)/1000;
 					Insta.Sender_Buffering.Delete(Insta.B_Map, Timer, Success);
 					Insta.Sender_Buffering.Put(Insta.B_Map,New_Timer,ValB);
 					Timed_Handlers.Set_Timed_Handler(New_Timer, Relay'Access);
@@ -150,7 +171,6 @@ procedure Free is new Ada.Unchecked_Deallocation(LLU.Buffer_Type, CM.Buffer_A_T)
 					find:=True;
 				end if;
 			end loop;
-			Ada.Text_IO.Put_Line("find"&Boolean'Image(find));
 			if find then
 				Insta.Sender_Dests.Put(Insta.D_Map, Mess, ValD);
 			else 

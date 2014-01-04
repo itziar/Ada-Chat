@@ -12,7 +12,6 @@ with Ada.Exceptions;
 with Debug;
 with Pantalla;
 with Chat_Messages;
-with Zeug;
 with Ada.Calendar;
 with Insta;
 with Messages;
@@ -31,7 +30,7 @@ procedure Chat_Peer is
 
 	Usage_Error : exception;
 	Host : ASU.Unbounded_String;
-	Port : ASU.Unbounded_String;
+	Port : Integer;
 	IP : ASU.Unbounded_String;
 	EP_R : LLU.End_Point_Type;
 	Seq_N : CM.Seq_N_T:=0;
@@ -105,9 +104,9 @@ procedure Chat_Peer is
 	REP			  : ASU.Unbounded_String;
 	begin
 		Ada.Text_IO.Put_Line("muestra en pantalla nick | EP_H | EP_R");
-		Zeug.Schneiden(Zeug.EP_H, MyEP);
-		Zeug.Schneiden(EP_R, REP);
-		Debug.Put_Line("Nick: " & ASU.To_String(Zeug.Nick) & " | EP_H: " & ASU.To_String(MyEP) & " | EP_R: " & ASU.To_String(REP), Pantalla.Rojo);
+		--CM.Schneiden(CM.EP_H, MyEP);
+		--CM.Schneiden(EP_R, REP);
+	--	Debug.Put_Line("Nick: " & ASU.To_String(CM.Nick) & " | EP_H: " & ASU.To_String(MyEP) & " | EP_R: " & ASU.To_String(REP), Pantalla.Rojo);
 	end Nickname;
 		
 	--HELP--
@@ -129,8 +128,8 @@ procedure Chat_Peer is
 	begin
 		loop
 			Debug.Set_Status(True);
-			if Zeug.prompt then
-				Ada.Text_IO.Put(ASU.To_String(Zeug.Nick) & " >> ");
+			if CM.prompt then
+				Ada.Text_IO.Put(ASU.To_String(CM.Nick) & " >> ");
 			end if;
 			Text:= ASU.To_Unbounded_String(Ada.Text_IO.Get_Line);
 			if ASU.To_String(Text) /= ".salir" then
@@ -143,21 +142,18 @@ procedure Chat_Peer is
 				elsif ASU.To_String(Text)=".sd" or ASU.To_String(Text)=".sender_dests" then
 					SD;
 				elsif ASU.To_String(Text)=".debug" then
-					Zeug.Information(Zeug.Purge);
+					CM.Information(CM.Purge);
 				elsif ASU.To_String(Text)=".wai" or ASU.To_String(Text)=".whoami" then
 					Nickname;
 				elsif ASU.To_String(Text)=".prompt" then
-					Zeug.Name(Zeug.Prompt);
+					CM.Name(CM.Prompt);
 				elsif ASU.To_String(Text)=".h" or ASU.To_String(Text)=".help" then
 					Help;
 				else
 					Seq_N:=Seq_N+1;
-					M_Debug.New_Message(Zeug.EP_H, Seq_N);
+					M_Debug.New_Message(CM.EP_H, Seq_N);
 					Bett:=CM.Writer;
-		Messages.Send(Bett, Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick, Text, Confirm_Sent, Zeug.EP_H);
-					Debug.Put("FLOOD WRITER ", Pantalla.Amarillo);
-					Debug.Put_Line(ASU.To_String(Zeug.Image_EP(Zeug.EP_H) & CM.Seq_N_T'Image(Seq_N) & " " & Zeug.Image_EP(Zeug.EP_H) & " " & Zeug.Nick & " " & Text));		
-   			--CH.Rellena_Buffer(CM.EP_H, EP_R, CM.EP_H, CM.EP_H,Msg, CM.Nick, Text, CH.Seq_N, Confirm_Sent);
+					Messages.Send(Bett, CM.EP_H, Seq_N, CM.EP_H, EP_R, CM.Nick, Text, Confirm_Sent, CM.EP_H);
 				end if;
 			end if;
 		exit when ASU.To_String(Text)=".salir";
@@ -166,7 +162,7 @@ procedure Chat_Peer is
 
 --CUERPO DEL PROGRAMA PRINCIPAL
 begin
-	Debug.Set_Status(Zeug.Purge);
+	Debug.Set_Status(CM.Purge);
 	Argument:= Ada.Command_Line.Argument_Count;
 	if Argument<5 then
 		raise Usage_Error;
@@ -174,20 +170,29 @@ begin
 	if (Argument /= 5 and Argument /= 7 and Argument /= 9) then
 		raise Usage_Error;   
 	end if;	
-	if Zeug.min_delay>Zeug.max_delay then
+	Port:= Integer'Value(Ada.Command_Line.Argument(1));
+	CM.Min_Delay:=Integer'Value(Ada.Command_Line.Argument(3));
+	CM.Max_Delay:=Integer'Value(Ada.Command_Line.Argument(4));
+	CM.Fault_Pct:=Integer'Value(Ada.Command_Line.Argument(5));
+	if CM.Min_Delay>CM.Max_Delay then
 		raise More_Error;
 	end if;
-	if (Zeug.fault_pct>100) or (Zeug.fault_pct<0) then
+	if (CM.Fault_Pct>100) or (CM.Fault_Pct<0) then
 		raise Fault_Error;
 	end if;   
-	if Zeug.Port < 1024 or Zeug.Port > 1_000_000 then
+	if Port < 1024 or Port > 1_000_000 then
 		raise Bad_Port;
 	end if;	
-	LLU.Bind(Zeug.EP_H, Handlers.EP_Handler'Access);
+	
+	Host:= ASU.To_Unbounded_String(LLU.Get_Host_Name);
+	IP:= ASU.To_Unbounded_String(LLU.To_IP(ASU.To_String(Host)));
+	CM.Nick:=ASU.To_Unbounded_String(Ada.Command_Line.Argument(2));
+	CM.EP_H:=LLU.Build (ASU.To_String(IP), Port);
+	LLU.Bind(CM.EP_H, Handlers.EP_Handler'Access);
 	LLU.Bind_Any(EP_R);
 	--Para la simulacion de perdidas de paquetes
-	LLU.Set_Random_Propagation_Delay(Zeug.Min_Delay, Zeug.Max_Delay);
-	LLU.Set_Faults_Percent(Zeug.Fault_Pct);
+	LLU.Set_Random_Propagation_Delay(CM.Min_Delay, CM.Max_Delay);
+	LLU.Set_Faults_Percent(CM.Fault_Pct);
 		
 	if Argument = 5 then
 		Debug.Put_Line("NO hacemos protocolo de admisión pues no tenemos contactos iniciales ...");
@@ -216,66 +221,58 @@ begin
 	if Argument=7 or Argument=9 then
 		Debug.Put_Line("Iniciando Protocolo de Admision ... ");		
 		Seq_N:=1;
-		M_Debug.New_Message(Zeug.EP_H, Seq_N);
-		Debug.Put("FLOOD Init ", Pantalla.Amarillo);
-		Zeug.Schneiden(Zeug.EP_H, MyEP);
+		M_Debug.New_Message(CM.EP_H, Seq_N);
 		Bett:=CM.Init;
-		Debug.Put_Line(ASU.TO_String(MyEP) & " " & ASU.To_String(MyEP) & " " & CM.Seq_N_T'Image(Seq_N));
-		Messages.Send(Bett, Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick, Text, Confirm_Sent, Zeug.EP_H);
-
+		Messages.Send(Bett, CM.EP_H, Seq_N, CM.EP_H, EP_R, CM.Nick, Text, Confirm_Sent, CM.EP_H);
 		Ada.Text_IO.Put_Line(" ");
 		Messages.Receive_Reject(EP_R, acept);
 		if acept then
 			Seq_N:=Seq_N+1;
-			M_Debug.New_Message(Zeug.EP_H, Seq_N);
+			M_Debug.New_Message(CM.EP_H, Seq_N);
 			Bett:=CM.Confirm;
-			Messages.Send(Bett, Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick, Text, Confirm_Sent, Zeug.EP_H);
+			Messages.Send(Bett, CM.EP_H, Seq_N, CM.EP_H, EP_R, CM.Nick, Text, Confirm_Sent, CM.EP_H);
 			Debug.Put_Line("Fin del Protocolo de Admisión.");
 		else
 			Confirm_Sent:=False;
 			Seq_N:=Seq_N+1;
 			Bett:=CM.Logout;
-		Messages.Send(Bett, Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick, Text, Confirm_Sent, Zeug.EP_H);
+			Messages.Send(Bett, CM.EP_H, Seq_N, CM.EP_H, EP_R, CM.Nick, Text, Confirm_Sent, CM.EP_H);
 		end if;
 	end if;
 
 	if acept then
-		Ada.Text_IO.Put_Line("Peer-Chat v2.0");
-		Ada.Text_IO.Put_Line("==============");
-		Ada.Text_IO.Put_Line(" ");
-		Ada.Text_IO.Put_Line("Entramos en el chat con Nick: " & ASU.To_String(Zeug.Nick));
-		Ada.Text_IO.Put_Line(".h para help");
+		M_Debug.Initial;
 		Loop_Writer(Seq_N);
 		Confirm_Sent:=True;
 		Seq_N:= Seq_N+1;
 		Bett:=CM.Logout;
-		Messages.Send(Bett, Zeug.EP_H, Seq_N, Zeug.EP_H, EP_R, Zeug.Nick, Text, Confirm_Sent, Zeug.EP_H);
+		Messages.Send(Bett, CM.EP_H, Seq_N, CM.EP_H, EP_R, CM.Nick, Text, Confirm_Sent, CM.EP_H);
 	end if; 
-	delay Duration(Zeug.Max_Delay/1000);
+	delay Duration(10*CM.Max_Delay/1000);
 	LLU.Finalize;
 	Timed_Handlers.Finalize;
 
 exception
 	when Usage_Error =>
-		Ada.Text_IO.Put_Line ("Uso: ./chat_peer port nick min_delay max_delay fault_pct [[host port] [host port]]");
+		Debug.Put_Line ("Uso: ./chat_peer port nick min_delay max_delay fault_pct [[host port] [host port]]", Pantalla.Rojo);
 		LLU.Finalize;
 		Timed_Handlers.Finalize;
 	when Fault_Error=>
-		Ada.Text_IO.Put_Line("fault_pct debe ser entre 0 y 100");
+		Debug.Put_Line("fault_pct debe ser entre 0 y 100", Pantalla.Rojo);
 		LLU.Finalize;
 		Timed_Handlers.Finalize;
 	when More_Error=>
-		Ada.Text_IO.Put_Line("min_delay debe ser menor que max_delay");
+		Debug.Put_Line("min_delay debe ser menor que max_delay", Pantalla.Rojo);
 		LLU.Finalize;
 		Timed_Handlers.Finalize;
 	when Bad_Port =>
-		Ada.Text_IO.Put_Line ("Puerto incorrecto: el rango comprendido es 1024-1.000.000");
+		Debug.Put_Line ("Puerto incorrecto: el rango comprendido es 1024-1.000.000", Pantalla.Rojo);
 		LLU.Finalize;
 		Timed_Handlers.Finalize;
 	when Ex:others =>
 		Debug.Put_Line ("Excepción imprevista: " &
 						Ada.Exceptions.Exception_Name(Ex) & " en: " &
-						Ada.Exceptions.Exception_Message(Ex), pantalla.rojo);
+						Ada.Exceptions.Exception_Message(Ex), Pantalla.Rojo);
 		LLU.Finalize;
 		Timed_Handlers.Finalize;
 

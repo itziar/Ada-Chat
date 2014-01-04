@@ -30,11 +30,11 @@ package body Maps_G is
                   Key   	: Key_Type;
                   Value 	: Value_Type;
                   Success	: out Boolean) is
-      New_Map : Cell_A := new Cell'(Key, Value, null, null);
-      P_Aux   : Cell_A;
-      Found   : Boolean := False;
+      P_Aux : Cell_A;
+      Found : Boolean;
+      Neu : Cell_A := new Cell'(Key=> Key, Value=>Value ,Next => null,Prev => null);
    begin
-   
+      Found:=False;
       P_Aux := M.P_First;
       Success := False;
       while not Found and P_Aux /= null loop
@@ -45,8 +45,7 @@ package body Maps_G is
          P_Aux := P_Aux.Next;
       end loop;
       if not Found and M.Length < Max_Length then
-      	-- Reutilización de P_Aux.
-      	P_Aux := New_Map;
+      	P_Aux := Neu;
          if M.P_First = null then
          	M.P_First := P_Aux;
          	M.P_Last := P_Aux;
@@ -58,7 +57,6 @@ package body Maps_G is
          M.Length := M.Length + 1;
          Success := True;
       end if;
-      
    end Put;
    
    procedure Delete (M			: in out Map;
@@ -78,18 +76,14 @@ package body Maps_G is
       	M.P_First.Prev := null;  	
       	Success := True;
       else
-      	-- La key no está en la primera posición así que avanzamos una.
       	P_Aux := P_Aux.Next;
-   		-- Recorremos la lista hasta llegar al nodo que queremos eliminar.
 		   while P_Aux.Next /= null and then P_Aux.Key /= Key loop
 		   	P_Aux := P_Aux.Next;
 		   end loop;
 			if P_Aux = M.P_Last then
-				-- Actualizamos M.P_Last porque hay que borrarlo.
 				M.P_Last := P_Aux.Prev;				
 				M.P_Last.Next := null;
 			else
-				-- Enlazamos el previo de P_Aux con su siguiente y el siguiente de P_Aux con su previo.
 				P_Aux.Prev.Next := P_Aux.Next;
 				P_Aux.Next.Prev := P_Aux.Prev;	   	
 			end if;
@@ -103,56 +97,46 @@ package body Maps_G is
    end Delete;
 
 	function Get_Keys (M: Map) return Keys_Array_Type is
-		Keys_Array : Keys_Array_Type;
 		P_Aux : Cell_A;
-		Pos : Integer := 1;
+		i : Integer := 1;
+      Keys_Array : Keys_Array_Type;
 	begin
-		
 		P_Aux := M.P_First;
 		while P_Aux /= null loop
-			Keys_Array(Pos) := P_Aux.Key;
+			Keys_Array(i) := P_Aux.Key;
 			P_Aux := P_Aux.Next;
-			Pos := Pos + 1;
+			i := i + 1;
 		end loop;
 		return Keys_Array;
-	
 	end Get_Keys;
 	
 	function Get_Values (M: Map) return Values_Array_Type is
-		Values_Array : Values_Array_Type;
 		P_Aux : Cell_A;
-		Pos : Integer := 1;
+		i : Integer := 1;
+      Values_Array : Values_Array_Type;
 	begin
-	
 		P_Aux := M.P_First;
 		while P_Aux /= null loop
-			Values_Array(Pos) := P_Aux.Value;
+			Values_Array(i) := P_Aux.Value;
 			P_Aux := P_Aux.Next;
-			Pos := Pos + 1;
+			i := i + 1;
 		end loop;
 		return Values_Array;
-	
 	end Get_Values;
 	
    function Map_Length (M : Map) return Natural is
-   begin
-   
-      return M.Length;
-      
+   begin   
+      return M.Length;     
    end Map_Length;
 
    procedure Print_Map (M : Map) is
       P_Aux : Cell_A;
    begin
-   	
-   	-- Recorremos la lista en sentido contrario, de más antiguo a más reciente.
-      P_Aux := M.P_Last;
+      P_Aux := M.P_First;
       while P_Aux /= null loop
-         Debug.Put_Line ("    [" & Key_To_String(P_Aux.Key) & "]," &
-                                 Value_To_String(P_Aux.Value), Pantalla.Rojo);
-         P_Aux := P_Aux.Prev;
+         Debug.Put(Key_To_String(P_Aux.Key) & " " & Value_To_String(P_Aux.Value), Pantalla.Rojo);
+         P_Aux := P_Aux.Next;
       end loop;
-      
    end Print_Map;
 
 end Maps_G;
