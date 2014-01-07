@@ -116,7 +116,9 @@ procedure Chat_Peer is
 		--CM.Schneiden(EP_R, REP);
 	--	Debug.Put_Line("Nick: " & ASU.To_String(CM.Nick) & " | EP_H: " & ASU.To_String(MyEP) & " | EP_R: " & ASU.To_String(REP), Pantalla.Rojo);
 	end Nickname;
-		
+	
+	
+
 	--HELP--
 	procedure Help is
 	begin
@@ -157,6 +159,10 @@ procedure Chat_Peer is
 					CM.Name(CM.Prompt);
 				elsif ASU.To_String(Text)=".h" or ASU.To_String(Text)=".help" then
 					Help;
+				elsif ASU.To_String(Text)=".t" or ASU.To_String(Text)=".topology" then
+					Ada.Text_IO.Put_Line("Calculando la topologia, espere por favor");
+					M_Debug.Topology(CM.EP_H);
+					Messages.Send_Topology(CM.EP_H, CM.EP_H);
 				else
 					Seq_N:=Seq_N+1;
 					M_Debug.New_Message(CM.EP_H, Seq_N);

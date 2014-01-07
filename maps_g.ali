@@ -2,7 +2,7 @@ V "GNAT Lib v4.6"
 P SS ZX
 R nnnvnnnnnnvnnnnnnnnnnnnnnvnnnnnvnnnnnnnnnnnnvnnnnnnnnnnvnnvnnnnnnnnnnnnnnnnnnnnn
 
-U maps_g%b		maps_g.adb		3c14046a NE OO PK GE
+U maps_g%b		maps_g.adb		7d08e95f NE OO PK GE
 W ada%s			ada.ads			ada.ali
 W ada.text_io%s		a-textio.adb		a-textio.ali
 W ada.unchecked_deallocation%s
@@ -25,7 +25,7 @@ D debug.ads		20131119133210 410922c8
 D interfac.ads		20090409150019 f77d8799
 D i-cstrea.ads		20100622165701 1bd72c32
 D maps_g.ads		20140103194931 b8881b4e
-D maps_g.adb		20140104161655 90f09abe
+D maps_g.adb		20140104181629 d1ec778b
 D pantalla.ads		20121124195702 9c520c57
 D system.ads		20120503162406 2d1a1afa
 D s-crtl.ads		20100617122610 ac77b159
@@ -52,7 +52,7 @@ X 10 a-uncdea.ads
 20u15*Unchecked_Deallocation 15|2w10 10r29
 X 11 debug.ads
 3K9*Debug 24e10 15|5w6 137r10
-20U14*Put 15|137s16
+14U14*Put_Line 15|137s16
 X 14 maps_g.ads
 4+9 Key_Type 6r18 9r32 10r37 18r33 24r35 29r36 32r58 49r15 15|13r33 30r35
 . 63r47
@@ -63,9 +63,9 @@ X 14 maps_g.ads
 9V18 "="{boolean} 9>23 9>27 15|21s23 41s23 74s23 80r64
 9*23 K1{4+9}
 9*27 K2{4+9}
-10V18 Key_To_String{string} 10>33 15|137s20
+10V18 Key_To_String{string} 10>33 15|137s25
 10*33 K{4+9}
-11V18 Value_To_String{string} 11>35 15|137s53
+11V18 Value_To_String{string} 11>35 15|137s58
 11*35 K{5+9}
 13k9*Maps_G 4z9 5z9 6z4 7z4 8z4 9z18 10z18 11z18 61l5 61e11 15|7b14 142l5
 . 142t11
@@ -100,8 +100,8 @@ X 14 maps_g.ads
 46R9 Cell 47r26 48c9 53e14 15|10r53 35r27
 47P9 Cell_A(46R9) 51r15 52r19 56r19 57r19 15|10r59 16r15 33r15 35r13 65r15
 . 100r25 114r25 133r15
-49*7 Key{4+9} 15|21r19 35m33 41r19 74r19 80r60 106r48 137r40
-50*7 Value{5+9} 15|22r28 35m44 42m19 120r50 137r75
+49*7 Key{4+9} 15|21r19 35m33 41r19 74r19 80r60 106r48 137r45
+50*7 Value{5+9} 15|22r28 35m44 42m19 120r50 137r80
 51p7 Next{47P9} 15|25r25 35m58 45r25 54m23 75r32 79r24 80r32 81r40 85m42
 . 87m44 87r58 88r38 88r39 107r40 121r40 138r25
 52p7 Prev{47P9} 15|35m71 53m27 76m19 84r51 87r38 87r39 88m44 88r58
@@ -124,8 +124,8 @@ X 15 maps_g.adb
 114p17 P_Aux{14|47P9} 118m17 119r23 120r44 121m25 121r34
 115i17 i{integer} 120r38 122m25 122r30
 116a7 Values_Array{14|36A14} 120m25 124r24
-133p7 P_Aux{14|47P9} 135m7 136r13 137r34 137r69 138m10 138r19
+133p7 P_Aux{14|47P9} 135m7 136r13 137r39 137r74 138m10 138r19
 X 16 pantalla.ads
-11K9*Pantalla 15|4w6 137r83 16|39e13
-16n28*Rojo{16E9} 15|137r92
+11K9*Pantalla 15|4w6 137r88 16|39e13
+16n28*Rojo{16E9} 15|137r97
 

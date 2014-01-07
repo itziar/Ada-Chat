@@ -13,16 +13,12 @@ package body Chat_Handler is
 		Seq_N: CM.Seq_N_T;
 		EP_H_Rsnd: LLU.End_Point_Type;
 		EP_R_Creat: LLU.End_Point_Type;
+		EP_H_Acker: LLU.End_Point_Type;
+		EP_H_Receive: LLU.End_Point_Type;
 		Nick: ASU.Unbounded_String;
 		Text: ASU.Unbounded_String;
 		Confirm_Sent: Boolean;
 		Success : Boolean;
-		Neighbour: ASU.Unbounded_String;
-		EPHCreat: ASU.Unbounded_String;
-		EPRCreat: ASU.Unbounded_String;
-		EPHRsnd: ASU.Unbounded_String;
-		MyEP: ASU.Unbounded_String;
-		EP_H_Acker: LLU.End_Point_Type;
 		empty: Boolean;
 		Value : CM.Destinations_T;
 		Mess : CM.Mess_Id_T;
@@ -40,6 +36,27 @@ package body Chat_Handler is
 			M_Debug.Receive_Supernode (EP_H_Creat);
 			--procesamiento para el supernodo
 			Messages.Management_Supernode(EP_H_Creat, EP_R_Creat, N);
+		elsif Bett=CM.Topology then
+			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);
+			EP_H_Rsnd:=LLU.End_Point_Type'Input(P_Buffer);
+			LLU.Reset(P_Buffer.all);
+			--mandar a EP_H_Creat
+			Messages.Send_Topologia(EP_H_Creat, EP_H_Rsnd, CM.EP_H);
+			--mandar a vecinos
+			Messages.Management_Topology(EP_H_Creat, EP_H_Rsnd, CM.EP_H);
+		elsif Bett=CM.Topologia then
+			EP_H_Receive:=LLU.End_Point_Type'Input(P_Buffer);
+			N:=Integer'Input(P_Buffer);
+			if N>=1 then
+				M_Debug.Vecinos(EP_H_Receive);
+				for i in 1..N loop
+					EP_H_Rsnd:=LLU.End_Point_Type'Input(P_Buffer);
+					Debug.Put_Line("           " & CM.SchneidenString(EP_H_Rsnd), Pantalla.Magenta);
+				end loop;
+			else
+				Debug.Put_Line(CM.SchneidenString(EP_H_Receive) & " no tiene vecinos ", Pantalla.Amarillo);
+			end if;
+			LLU.Reset(P_Buffer.all);
 		elsif Bett=CM.Ack then
 			EP_H_Acker:=LLU.End_Point_Type'Input(P_Buffer);
 			EP_H_Creat:=LLU.End_Point_Type'Input(P_Buffer);

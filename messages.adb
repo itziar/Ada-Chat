@@ -9,6 +9,7 @@ package body Messages is
 	procedure Send_Supernode(EP_H: LLU.End_Point_Type; EP_R: LLU.End_Point_Type; EP_H_S: LLU.End_Point_Type; N: Integer) is
 		Buffer: aliased LLU.Buffer_Type(1024);
 	begin
+		M_Debug.Send_Supernode (EP_H_S);
 		LLU.Reset(Buffer);
 		CM.Message_Type'Output(Buffer'Access, CM.Supernode);
 		LLU.End_Point_Type'Output(Buffer'Access, EP_H);
@@ -200,7 +201,6 @@ procedure Free is new Ada.Unchecked_Deallocation(LLU.Buffer_Type, CM.Buffer_A_T)
 		Success: Boolean;
 		New_Timer: Ada.Calendar.Time;
 		find: Boolean:= False;
-		--Bett: CM.Message_Type;
 	begin
 		Insta.Sender_Buffering.Get(Insta.B_Map, Timer, ValB, Success);
 		Mess := (ValB.EP_H_Creat, ValB.Seq_N);
@@ -229,22 +229,59 @@ procedure Free is new Ada.Unchecked_Deallocation(LLU.Buffer_Type, CM.Buffer_A_T)
 	end Relay;
 
 	procedure Manejador is
-		--continuar : ASU.Unbounded_String;
 	begin
-		--Ada.Text_IO.Put_Line("Ha pulsado CTRL + C ... Desea continuar? (Y/N)");
-		--continuar:= ASU.To_Unbounded_String(Ada.Text_IO.Get_Line);
-		--while continuar/="Y" or continuar/="y" or continuar/="N" or continuar/="n" loop
-			--Ada.Text_IO.Put_Line("Pulse Y/N");
-			--continuar:= ASU.To_Unbounded_String(Ada.Text_IO.Get_Line);	
-		--end loop;
-		--if continuar="Y" or continuar="y" then
-			--Ada.Text_IO.Put_Line("Continuamos con el chat");
-		--elsif continuar="N" or continuar="n" then
-			Ada.Text_IO.Put_Line("Procederemos al cierre del chat, por favor espere");
-			LLU.Finalize;
-			Timed_Handlers.Finalize;
-			raise Program_Error;
-		--end if;
+		Ada.Text_IO.Put_Line("Procederemos al cierre del chat, por favor espere");
+		LLU.Finalize;
+		Timed_Handlers.Finalize;
+		raise Program_Error;
 	end Manejador;
+
+	procedure Send_Topology(EP_H_Creat: LLU.End_Point_Type; EP_H_Rsnd: LLU.End_Point_Type) is
+		Buffer: aliased LLU.Buffer_Type(1024);
+		EP_Arry	: Insta.Neighbors.Keys_Array_Type;
+	begin
+		LLU.Reset(Buffer);
+		CM.Message_Type'Output(Buffer'Access, CM.Topology);
+		LLU.End_Point_Type'Output(Buffer'Access,EP_H_Creat);
+		LLU.End_Point_Type'Output(Buffer'Access,EP_H_Rsnd);
+		EP_Arry := Insta.Neighbors.Get_Keys(Insta.N_Map);
+   		for I in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
+   			if EP_Arry(i) /= EP_H_Creat and EP_Arry(i) /= EP_H_Rsnd then
+				LLU.Send(EP_Arry(i), Buffer'Access);
+			end if;
+   		end loop;
+	end Send_Topology;
+
+	procedure Send_Topologia(EP_H_Creat: LLU.End_Point_Type; EP_H_Rsnd: LLU.End_Point_Type; My_EP: LLU.End_Point_Type) is
+		Buffer: aliased LLU.Buffer_Type(1024);
+		EP_Arry	: Insta.Neighbors.Keys_Array_Type;
+	begin
+		--saco todos los vecinos y se lo envio a EP_H_Creat
+		LLU.Reset(Buffer);
+		CM.Message_Type'Output(Buffer'Access, CM.Topologia);
+		LLU.End_Point_Type'Output(Buffer'Access, My_EP);
+		Integer'Output(Buffer'Access, Insta.Neighbors.Map_Length(Insta.N_Map));
+		EP_Arry := Insta.Neighbors.Get_Keys(Insta.N_Map);
+		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
+			LLU.End_Point_Type'Output(Buffer'Access, EP_Arry(i)); 
+		end loop;
+		LLU.Send(EP_H_Creat, Buffer'Access);
+	end Send_Topologia;
+
+	procedure Management_Topology(EP_H_Creat: LLU.End_Point_Type; EP_H_Rsnd: LLU.End_Point_Type; My_EP: LLU.End_Point_Type) is
+		Buffer: aliased LLU.Buffer_Type(1024);
+		EP_Arry: Insta.Neighbors.Keys_Array_Type;
+	begin
+		LLU.Reset(Buffer);
+		CM.Message_Type'Output(Buffer'Access, CM.Topology);
+		LLU.End_Point_Type'Output(Buffer'Access, EP_H_Creat);
+		LLU.End_Point_Type'Output(Buffer'Access, My_EP);
+		EP_Arry := Insta.Neighbors.Get_Keys(Insta.N_Map);
+		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
+			if EP_Arry(i) /= EP_H_Creat and EP_Arry(i)/=EP_H_Rsnd then
+				LLU.Send(EP_Arry(i), Buffer'Access);
+			end if;
+		end loop;
+	end Management_Topology;
 
 end Messages;

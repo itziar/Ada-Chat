@@ -13,7 +13,7 @@ package body M_Debug is
 		Ada.Text_IO.Put_Line("Entramos en el chat con Nick: " & ASU.To_String(CM.Nick));
 		Ada.Text_IO.Put_Line(".h para help");
 	end;
-	
+
 	procedure Flood (Bett: CM.Message_Type; EP_H_Rsnd: LLU.End_Point_Type; EP_H_Creat: LLU.End_Point_Type; Seqi: CM.Seq_N_T) is
 	begin
 		Debug.Put("FLOOD " & CM.Message_Type'Image(Bett), Pantalla.Amarillo);
@@ -75,6 +75,12 @@ package body M_Debug is
 		Ada.Text_IO.Put_Line("Usuario rechazado porque " & CM.SchneidenString(EP_H_A) & " está usando el mismo nick");
 	end;
 
+	procedure Send_Supernode (EP_H: LLU.End_Point_Type) is 
+	begin
+		Debug.Put("Send Supernode ", Pantalla.Amarillo);
+		Debug.Put_Line(CM.SchneidenString(EP_H));
+	end Send_Supernode;
+
 	procedure Receive_Supernode (EP_H_A: LLU.End_Point_Type) is
 	begin
 		Debug.Put ("RCV Supernode ", Pantalla.Amarillo);
@@ -97,4 +103,20 @@ package body M_Debug is
 	begin
 		Debug.Put_Line("Reenvio a " & CM.SchneidenString(EP) & " con retrie igual a " & Natural'Image(Retries), Pantalla.Amarillo);
 	end Retrans;
+
+	procedure Vecinos(EP_H: LLU.End_Point_Type) is
+	begin
+		Debug.Put_Line(CM.SchneidenString(EP_H) & " tiene como vecino/s a: ", Pantalla.Amarillo);
+	end;
+
+	procedure Topology (EP_H: LLU.End_Point_Type) is
+		EP_Arry	: Insta.Neighbors.Keys_Array_Type;
+	begin
+		Vecinos(EP_H);
+		EP_Arry := Insta.Neighbors.Get_Keys(Insta.N_Map);
+		for i in 1..Insta.Neighbors.Map_Length(Insta.N_Map) loop
+			Debug.Put_Line("           " & CM.SchneidenString(EP_Arry(i)), Pantalla.Magenta);
+		end loop;
+	end;
+
 end M_Debug;
