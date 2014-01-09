@@ -152,11 +152,11 @@ end Management;
 
 procedure Send(Bett: CM.Message_Type; EP_H_Creat: LLU.End_Point_Type; Seqi: CM.Seq_N_T; EP_H_Rsnd: LLU.End_Point_Type; EP_R_Creat: LLU.End_Point_Type; Nick : ASU.Unbounded_String; Text: ASU.Unbounded_String; Confirm_Sent: Boolean; EP_H_Receive: LLU.End_Point_Type) is
 	EP_Arry	: Insta.Neighbors.Keys_Array_Type;
-   	Mess		: CM.Mess_Id_T;
-   	ValD		: CM.Destinations_T;
-   	Envio		: Boolean := False;
-   	ValB  : CM.Value_T;
-   	Hora_Rtx	: Ada.Calendar.Time;
+   	Mess: CM.Mess_Id_T;
+   	ValD: CM.Destinations_T;
+   	Envio: Boolean := False;
+   	ValB : CM.Value_T;
+   	Hora_Rtx: Ada.Calendar.Time;
 begin
 	CM.P_Buffer := new LLU.Buffer_Type(1024);
    	CM.Message_Type'Output(CM.P_Buffer, Bett);
@@ -180,16 +180,16 @@ begin
 			Hora_Rtx := Ada.Calendar.Clock + 2*Duration(CM.Max_Delay)/1000;
 			Envio := True;
 			M_Debug.Send(EP_Arry(i));
-   			ValD(I) := (EP_Arry(i), 0);
+   			ValD(i) := (EP_Arry(i), 0);
 			ValB := (EP_H_Creat, Seqi, CM.P_Buffer);
 			Insta.Sender_Buffering.Put(Insta.B_Map, Hora_Rtx, ValB);
 			Timed_Handlers.Set_Timed_Handler(Hora_Rtx, Relay'Access);
 		end if;
    	end loop;
    	if Envio then
-			Mess := (EP_H_Creat, Seqi);
-			Insta.Sender_Dests.Put(Insta.D_Map, Mess, ValD);
-		end if;
+		Mess := (EP_H_Creat, Seqi);
+		Insta.Sender_Dests.Put(Insta.D_Map, Mess, ValD);
+	end if;
 end Send;
 
 procedure Free is new Ada.Unchecked_Deallocation(LLU.Buffer_Type, CM.Buffer_A_T);

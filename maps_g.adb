@@ -1,3 +1,7 @@
+--
+--ITZIAR POLO MARTINEZ
+--TECNOLOGIAS
+--
 
 with Ada.Unchecked_Deallocation;
 with Ada.Text_IO;

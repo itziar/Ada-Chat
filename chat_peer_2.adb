@@ -19,7 +19,7 @@ with M_Debug;
 with Timed_Handlers;
 with Gnat.Ctrl_C;
 
-procedure Chat_Peer is
+procedure Chat_Peer_2 is
 	package CM renames Chat_Messages;
 	use type CM.Message_Type;
 	package LLU renames Lower_Layer_UDP;
@@ -52,10 +52,6 @@ procedure Chat_Peer is
 	Acept : Boolean:= False;
 	Confirm_Sent : Boolean:= False;
 	EP_N : ASU.Unbounded_String;
-	Neighbour : ASU.Unbounded_String;
-	MyEP : ASU.Unbounded_String;
-	EPHA : ASU.Unbounded_String;
-	REP : ASU.Unbounded_String;
 	More_Error : exception;
 	Fault_Error : exception;
 	Bad_Port : exception;
@@ -112,9 +108,7 @@ procedure Chat_Peer is
 	REP			  : ASU.Unbounded_String;
 	begin
 		Ada.Text_IO.Put_Line("muestra en pantalla nick | EP_H | EP_R");
-		--CM.Schneiden(CM.EP_H, MyEP);
-		--CM.Schneiden(EP_R, REP);
-	--	Debug.Put_Line("Nick: " & ASU.To_String(CM.Nick) & " | EP_H: " & ASU.To_String(MyEP) & " | EP_R: " & ASU.To_String(REP), Pantalla.Rojo);
+		Debug.Put_Line("Nick: " & ASU.To_String(CM.Nick) & " | EP_H: " & CM.SchneidenString(CM.EP_H) & " | EP_R: " & CM.SchneidenString(EP_R), Pantalla.Rojo);
 	end Nickname;
 	
 	
@@ -206,8 +200,8 @@ begin
 	LLU.Bind(CM.EP_H, Handlers.EP_Handler'Access);
 	LLU.Bind_Any(EP_R);
 	--Para la simulacion de perdidas de paquetes
-	--LLU.Set_Random_Propagation_Delay(CM.Min_Delay, CM.Max_Delay);
-	--LLU.Set_Faults_Percent(CM.Fault_Pct);
+	LLU.Set_Random_Propagation_Delay(CM.Min_Delay, CM.Max_Delay);
+	LLU.Set_Faults_Percent(CM.Fault_Pct);
 		
 	if Argument = 5 then
 		Debug.Put_Line("NO hacemos protocolo de admisión pues no tenemos contactos iniciales ...");
@@ -344,5 +338,5 @@ exception
 		LLU.Finalize;
 		Timed_Handlers.Finalize;
 
-end Chat_Peer;
+end Chat_Peer_2;
 

@@ -2,6 +2,7 @@
 --ITZIAR POLO MARTINEZ
 --TECNOLOGIAS
 --
+
 with Ada.Text_IO;
 with Ada.Command_Line;
 with Ada.Strings.Unbounded;
@@ -68,7 +69,7 @@ package Chat_Messages is
 	----------------------------
 
 	procedure Information (Purge : in out Boolean);
-   	procedure Name (prompt : in out Boolean);
+	procedure Name (prompt : in out Boolean);
 	function SchneidenString (EP_N : in LLU.End_Point_Type) return String;
 	function Time_Image_One (T : Ada.Calendar.Time) return String;
 	function Mess_Equal (Mess_1 : Mess_Id_T; Mess_2 : Mess_Id_T) return Boolean;

@@ -7,10 +7,10 @@ U ordered_maps_protector_g%b  ordered_maps_protector_g.adb  678d9ea0 NE OO PK GE
 U ordered_maps_protector_g%s  ordered_maps_protector_g.ads  d392c63e BN EE NE OO PK GE
 W ordered_maps_g%s	ordered_maps_g.adb	ordered_maps_g.ali
 
-D ordered_maps_g.ads	20121231094648 d79544de
-D ordered_maps_protector_g.ads  20140103195116 040782e0
-D ordered_maps_protector_g.adb  20140103195117 638a1c40
-D system.ads		20120503162406 2d1a1afa
+D ordered_maps_g.ads	20140109113739 d79544de
+D ordered_maps_protector_g.ads  20140109113739 040782e0
+D ordered_maps_protector_g.adb  20140109113739 638a1c40
+D system.ads		20120503154647 23e1f70b
 X 1 ordered_maps_g.ads
 8+9 Key_Type 2|13r41[6] 18r41[6] 22r44[6] 33r41[6] 37r41[6] 40r44[6] 3|6r41[2|6]
 . 15r35[2|6] 23r44[2|6] 48r38[2|6] 58r32[2|6] 67r41[2|6]
